@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup Processing
         run: |
-          gh release download ${{ env.PROCESSING_TAG }} --repo processing/processing4 --pattern "*linux*64*"
+          gh release download ${{ env.PROCESSING_TAG }} --repo processing/processing4 --pattern "*linux*x64*"
           tar xf *.tgz
           rm processing*.tgz
           cd processing*
@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup Processing
         run: |
-          gh release download ${{ env.PROCESSING_TAG }} --repo processing/processing4 --pattern "*windows*64*"
+          gh release download ${{ env.PROCESSING_TAG }} --repo processing/processing4 --pattern "*windows*x64*"
           7z x *.zip
           cd processing*
           echo "$((Get-Item .).FullName)/" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append

@@ -5,8 +5,14 @@ ArrayList<Planet> planets;
 
 PGraphics grBkgrVoronoi;
 
+PVector ship_pos;
+PVector ship_vel = new PVector(-25, 0);
+PVector ship_acc = new PVector(0, 0);
+float dt = .1;
+
 void setup() {
   fullScreen();
+  ship_pos = new PVector(19 * width / 20, height / 2);
 
   ArrayList<Planet> initial_planets = new ArrayList<Planet>();
   planets = new ArrayList<Planet>();
@@ -75,6 +81,21 @@ void setup() {
 
 void draw() {
   image(grBkgrVoronoi, 0, 0);
+
+
+  for (int i = 0; i < 10; i++) {
+    ship_acc = new PVector(0, 0);
+
+
+    for (Planet p : planets) {
+      PVector difference = PVector.sub(ship_pos, p.pos);
+      ship_acc.add(difference.div(sq(difference.mag())).mult(-p.mass));
+    }
+
+    ship_vel.add(ship_acc.mult(dt));
+    ship_pos.add(ship_vel.mult(dt));
+  }
+  circle(ship_pos.x, ship_pos.y, 50);
 }
 
 void mousePressed() {

@@ -16,7 +16,7 @@ jobs:
       - name: Setup Processing
         run: |
           wget https://github.com/processing/processing4/releases/download/processing-1293-4.3/processing-4.3-linux-x64.tgz
-          tar xf *.tar.xz
+          tar xf *.tgz
           echo "$(pwd)/processing-4.3/" >> $GITHUB_PATH
       - name: Download Sound Library
         run: |

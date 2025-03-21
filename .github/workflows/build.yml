@@ -5,9 +5,6 @@ on:
   pull_request:
   workflow_dispatch:
 
-env:
-  PROCESSING_TAG: processing-1293-4.3
-
 jobs:
   build-linux:
     runs-on: ubuntu-24.04
@@ -45,9 +42,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Processing
-        uses: pr1metine/setup-processing@v2.1.0
-        with:
-          tag: ${{ env.PROCESSING_TAG }}
+        run: |
+          Invoke-WebRequest https://github.com/processing/processing4/releases/download/processing-1293-4.3/processing-4.3-windows-x64.zip -OutFile processing.zip
+          7z x processing.zip
+          echo "$((Get-Item .).FullName)/processing-4.3" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: Download Sound Library
         run: |
           mkdir $HOME/ProcessingSketchbook/libraries/

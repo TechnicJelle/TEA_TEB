@@ -14,15 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Processing
-        uses: pr1metine/setup-processing@v2.1.0
-        with:
-          tag: ${{ env.PROCESSING_TAG }}
+        run: |
+          wget https://github.com/processing/processing4/releases/download/processing-1293-4.3/processing-4.3-linux-x64.tgz
+          tar xf *.tar.xz
+          echo "$(pwd)/processing-4.3/" >> $GITHUB_PATH
       - name: Download Sound Library
         run: |
           mkdir -p $HOME/ProcessingSketchbook/libraries/
           mkdir -p $HOME/.config/processing/
           echo "sketchbook.path.four=$HOME/ProcessingSketchbook" > $HOME/.config/processing/preferences.txt
-          wget https://github.com/processing/processing-sound/releases/download/latest/sound.zip -O sound.zip
+          wget https://github.com/processing/processing-sound/releases/download/v2.4.0/sound.zip
           7z x sound.zip
           mv sound $HOME/ProcessingSketchbook/libraries/
       - name: Export

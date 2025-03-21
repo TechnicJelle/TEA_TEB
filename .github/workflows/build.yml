@@ -8,6 +8,7 @@ on:
 env:
   PROCESSING_TAG: processing-1293-4.3
   LIB_SOUND_TAG: v2.4.0
+  GH_TOKEN: ${{ github.token }}
 
 jobs:
   build-linux:

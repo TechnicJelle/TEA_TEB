@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup Processing
         run: |
-          gh release download ${{ env.PROCESSING_TAG }} --repo processing/processing4 --pattern "*linux-x64*"
+          gh release download ${{ env.PROCESSING_TAG }} --repo processing/processing4 --pattern "*linux*64*"
           tar xf *.tgz
           rm processing*.tgz
           cd processing*
@@ -50,15 +50,16 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup Processing
         run: |
-          Invoke-WebRequest https://github.com/processing/processing4/releases/download/processing-1293-4.3/processing-4.3-windows-x64.zip -OutFile processing.zip
-          7z x processing.zip
-          echo "$((Get-Item .).FullName)/processing-4.3" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          gh release download ${{ env.PROCESSING_TAG }} --repo processing/processing4 --pattern "*windows*64*"
+          7z x *.zip
+          cd processing*
+          echo "$((Get-Item .).FullName)/" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: Download Sound Library
         run: |
           mkdir $HOME/ProcessingSketchbook/libraries/
           mkdir $HOME/AppData/Roaming/Processing/
           echo "sketchbook.path.four=$HOME/ProcessingSketchbook" > $HOME/AppData/Roaming/Processing/preferences.txt
-          Invoke-WebRequest https://github.com/processing/processing-sound/releases/download/v2.4.0/sound.zip -OutFile sound.zip
+          gh release download ${{ env.LIB_SOUND_TAG }} --repo processing/processing-sound --pattern sound.zip
           7z x sound.zip
           mv sound $HOME/ProcessingSketchbook/libraries/
       - name: Export

@@ -22,11 +22,13 @@ jobs:
           rm processing*.tgz
           cd processing*
           echo "$(pwd)" >> $GITHUB_PATH
-      - name: Download Sound Library
+      - name: Setup Libraries Directory
         run: |
           mkdir -p $HOME/ProcessingSketchbook/libraries/
           mkdir -p $HOME/.config/processing/
           echo "sketchbook.path.four=$HOME/ProcessingSketchbook" > $HOME/.config/processing/preferences.txt
+      - name: Download & Install Sound Library
+        run: |
           gh release download ${{ env.LIB_SOUND_TAG }} --repo processing/processing-sound --pattern sound.zip
           7z x sound.zip
           mv sound $HOME/ProcessingSketchbook/libraries/
@@ -54,11 +56,13 @@ jobs:
           7z x *.zip
           cd processing*
           echo "$((Get-Item .).FullName)/" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-      - name: Download Sound Library
+      - name: Setup Libraries Directory
         run: |
           mkdir $HOME/ProcessingSketchbook/libraries/
           mkdir $HOME/AppData/Roaming/Processing/
           echo "sketchbook.path.four=$HOME/ProcessingSketchbook" > $HOME/AppData/Roaming/Processing/preferences.txt
+      - name: Download & Install Sound Library
+        run: |
           gh release download ${{ env.LIB_SOUND_TAG }} --repo processing/processing-sound --pattern sound.zip
           7z x sound.zip
           mv sound $HOME/ProcessingSketchbook/libraries/

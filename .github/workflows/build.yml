@@ -2,29 +2,22 @@ name: Build
 
 on:
   push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
   workflow_dispatch:
 
 env:
   PROCESSING_TAG: processing-1293-4.3
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-24.04, windows-2022]
+  build-linux:
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Setup Processing
         uses: pr1metine/setup-processing@v2.1.0
         with:
           tag: ${{ env.PROCESSING_TAG }}
-      - name: Download Sound Library on Linux
-        if: runner.os == 'Linux'
+      - name: Download Sound Library
         run: |
           mkdir -p $HOME/ProcessingSketchbook/libraries/
           mkdir -p $HOME/.config/processing/
@@ -32,8 +25,29 @@ jobs:
           wget https://github.com/processing/processing-sound/releases/download/latest/sound.zip -O sound.zip
           7z x sound.zip
           mv sound $HOME/ProcessingSketchbook/libraries/
-      - name: Download Sound Library on Windows
-        if: runner.os == 'Windows'
+      - name: Export
+        # The processing-java prefers absolute paths on Windows.
+        run: processing-java --sketch="${{ github.workspace }}" --output="${{ github.workspace }}/out" --force --export
+      - name: Linux workaround for permissions
+        # Zipping up the project clears the executable bit on the java binary, so make the startup script enable it again.
+        #  https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
+        run: sed -i '5i chmod +x $APPDIR/java/bin/java' out/${{ github.event.repository.name }}
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ github.event.repository.name }}(${{ runner.os }})"
+          path: |
+            ./out/
+            !./out/source/
+  build-windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Processing
+        uses: pr1metine/setup-processing@v2.1.0
+        with:
+          tag: ${{ env.PROCESSING_TAG }}
+      - name: Download Sound Library
         run: |
           mkdir $HOME/ProcessingSketchbook/libraries/
           mkdir $HOME/AppData/Roaming/Processing/
@@ -44,11 +58,6 @@ jobs:
       - name: Export
         # The processing-java prefers absolute paths on Windows.
         run: processing-java --sketch="${{ github.workspace }}" --output="${{ github.workspace }}/out" --force --export
-      - name: Linux workaround for permissions
-        # Zipping up the project clears the executable bit on the java binary, so make the startup script enable it again.
-        #  https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
-        if: runner.os == 'Linux'
-        run: sed -i '5i chmod +x $APPDIR/java/bin/java' out/DWM_WARLOCK
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:

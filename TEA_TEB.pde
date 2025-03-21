@@ -3,11 +3,10 @@ import processing.sound.*;
 
 ArrayList<Planet> planets;
 
-
+PGraphics grBkgrVoronoi;
 
 void setup() {
   fullScreen();
-  //background(10, 20, 50);
 
   ArrayList<Planet> initial_planets = new ArrayList<Planet>();
   planets = new ArrayList<Planet>();
@@ -33,40 +32,41 @@ void setup() {
 
   //do img array stuff
 
-  loadPixels();
+  grBkgrVoronoi = createGraphics(width, height);
+  grBkgrVoronoi.beginDraw();
+  grBkgrVoronoi.background(0);
+
+  grBkgrVoronoi.loadPixels();
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
       float closest_1 = Float.MAX_VALUE;
       float closest_2 = Float.MAX_VALUE - 1;
 
-      for (Planet p : planets){
+      for (Planet p : planets) {
         float distance = dist(x, y, p.pos.x, p.pos.y);
-        
+
         if (distance < closest_2) {
           closest_2 = distance;
         }
-        
-        if (closest_2 < closest_1){
+
+        if (closest_2 < closest_1) {
           float temp = closest_2;
           closest_2 = closest_1;
           closest_1 = temp;
         }
       }
 
-      if (closest_2 - closest_1 < 50 * (closest_2 - closest_1) / (closest_1 + closest_2)){
+      if (closest_2 - closest_1 < 50 * (closest_2 - closest_1) / (closest_1 + closest_2)) {
         //make line
-        pixels[x + y * width] = color(0);
+        grBkgrVoronoi.pixels[x + y * width] = color(0);
       } else {
         //make gradient
-        pixels[x + y * width] = color(255 / (1 + closest_1/100), 10, 50);
+        grBkgrVoronoi.pixels[x + y * width] = color(255 / (1 + closest_1/100), 10, 50);
       }
-      
     }
   }
-  updatePixels();
-
-
-
+  grBkgrVoronoi.updatePixels();
+  grBkgrVoronoi.endDraw();
 
   //for (Planet p : planets) {
   //  circle(p.pos.x, p.pos.y, p.radius);
@@ -74,8 +74,7 @@ void setup() {
 }
 
 void draw() {
-
-  noLoop();
+  image(grBkgrVoronoi, 0, 0);
 }
 
 void mousePressed() {

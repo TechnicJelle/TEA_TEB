@@ -20,6 +20,9 @@ int left_border = 100;
 int right_border = 100;
 int top_border = 50;
 int bottom_border = 200;
+
+int trajectory_lookahead = 2500;
+
 float ship_exclusion_radius = 100;
 
 void setup() {
@@ -147,15 +150,13 @@ void draw() {
     PVector difference = PVector.sub(ship_pos, soi.pos);
     float sq_distance = 1 + sq(difference.mag());
     ship_acc.add(difference.normalize().mult(-G * soi.mass / sq_distance));
+    ship_vel.add(PVector.mult(ship_acc, dt));
+    ship_pos.add(PVector.mult(ship_vel, dt));
 
     //limit velocity
     if (ship_vel.mag() > velocity_limit) {
       ship_vel.mult(velocity_limit / ship_vel.mag());
     }
-
-
-    ship_vel.add(PVector.mult(ship_acc, dt));
-    ship_pos.add(PVector.mult(ship_vel, dt));
 
     //support wall bouncing
     if (ship_pos.x > width-right_border || ship_pos.x < left_border) {
@@ -176,18 +177,107 @@ void draw() {
     }
   }
 
+  PVector trajectory_pos = ship_pos.copy();
+  PVector trajectory_vel = ship_vel.copy();
+  PVector trajectory_acc;
+
+  PVector[] trajectory = new PVector[trajectory_lookahead];
+
+  // for the trajectory stuff
+  for (int i = 0; i < trajectory_lookahead; i++) {
+    trajectory_acc = new PVector(0, 0);
+    float largest_grav_force = 0;
+
+    for (int j = 0; j < planets.size(); j++) {
+      Planet p = planets.get(j);
+
+      PVector difference = PVector.sub(trajectory_pos, p.pos);
+      float sq_distance = sq(difference.mag());
+      float gravitational_force = G * p.mass / sq_distance;
+
+      //if bigger, set new soi
+      if (gravitational_force > largest_grav_force) {
+        largest_grav_force = gravitational_force;
+        soi_planet = j;
+      }
+    }
+
+    //do the soi stuff
+    Planet soi = planets.get(soi_planet);
+    PVector difference = PVector.sub(trajectory_pos, soi.pos);
+    float sq_distance = 1 + sq(difference.mag());
+    trajectory_acc.add(difference.normalize().mult(-G * soi.mass / sq_distance));
+    trajectory_vel.add(PVector.mult(trajectory_acc, dt));
+    trajectory_pos.add(PVector.mult(trajectory_vel, dt));
+
+    //limit velocity
+    if (trajectory_vel.mag() > velocity_limit) {
+      trajectory_vel.mult(velocity_limit / trajectory_vel.mag());
+    }
+
+    //support wall bouncing
+    if (trajectory_pos.x > width-right_border || trajectory_pos.x < left_border) {
+      if (trajectory_pos.x > width-right_border) {
+        trajectory_pos.x = width-right_border;
+      } else {
+        trajectory_pos.x = left_border;
+      }
+      trajectory_vel.x *= -1;
+    }
+    if (trajectory_pos.y > height-bottom_border || trajectory_pos.y < top_border) {
+      if (trajectory_pos.y > height-bottom_border) {
+        trajectory_pos.y = height-bottom_border;
+      } else {
+        trajectory_pos.y = top_border;
+      }
+      trajectory_vel.y *= -1;
+    }
+
+    //take_care_of_wall_bounce(trajectory_pos, trajectory_vel);
+
+
+    noStroke();
+
+
+
+    fill(0, 255, 0);
+    circle(trajectory_pos.x, trajectory_pos.y, 2);
+
+    trajectory[i] = trajectory_pos;
+  }
+
+  Planet soi = planets.get(soi_planet);
+
+
+  //test if trajectory gets stuck
+  boolean going_to_die = false;
+  
+  float sum = 0;
+  for(int v = 2000; v < 2500; v++){
+    sum += sq(PVector.sub(trajectory[v], soi.pos).mag());
+  }
+
+  if (sum/500 < soi.radius){
+    going_to_die = true;
+  }
+  
+
   //draw ship
-  fill(color(0, 255, 255));
+  if (going_to_die) {
+    fill(color(255, 100, 0));
+  } else {
+    fill(color(0, 255, 255));
+  }
   circle(ship_pos.x, ship_pos.y, ship_rad);
 
-  //draw planets
+  //draw all planets
   for (Planet p : planets) {
     noStroke();
     fill(p.col);
     circle(p.pos.x, p.pos.y, p.radius);
   }
 
-  Planet soi = planets.get(soi_planet);
+  //color the current soi planet, mainly for debug atm
   fill(0, 255, 0);
   noStroke();
   circle(soi.pos.x, soi.pos.y, soi.radius);

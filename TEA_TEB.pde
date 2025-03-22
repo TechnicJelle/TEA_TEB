@@ -5,7 +5,7 @@ ArrayList<Planet> planets;
 PGraphics grBkgrVoronoi;
 
 PVector ship_pos;
-PVector ship_vel = new PVector(-50, 0);
+PVector ship_vel = new PVector(-5, 0);
 PVector ship_acc = new PVector(0, 0);
 
 float ship_rad = 10;
@@ -98,31 +98,38 @@ void draw() {
   image(grBkgrVoronoi, 0, 0);
 
   // update ship position based on gravity
-  for (int i = 0; i < 250; i++) {
+  int soi_planet = 0;
+  for (int i = 0; i < 2; i++) {
     ship_acc = new PVector(0, 0);
+    float largest_grav_force = 0;
 
-    boolean touching = false;
-    for (Planet p : planets) {
+    for (int j = 0; j < planets.size(); j++) {
+      Planet p = planets.get(j);
+      
       PVector difference = PVector.sub(ship_pos, p.pos);
-      float sq_distance = sq(difference.mag());
-      ship_acc.add(difference.normalize().mult(-p.mass / sq_distance));
-
-      if (sq_distance < sq(p.radius + ship_rad)) {
-        touching = true;
-      }
+      float sq_distance = sq(difference.mag());   
+      float gravitational_force = p.mass / sq_distance;
+      
+      //if bigger, set new soi
+      if(gravitational_force > largest_grav_force){
+        largest_grav_force = gravitational_force;
+        soi_planet = j;
+      }     
     }
 
-    ship_vel.add(ship_acc.mult(dt));
+    //do the soi stuff
+    Planet soi = planets.get(soi_planet);
+    PVector difference = PVector.sub(ship_pos, soi.pos);
+    float sq_distance = sq(difference.mag());
+    ship_acc.add(difference.normalize().mult(-soi.mass / sq_distance));
 
-    //shitty collisions
-    if (touching) {ship_vel.mult(-1);}
+    ship_vel.add(PVector.mult(ship_acc, dt));
+    ship_pos.add(PVector.mult(ship_vel, dt));
   }
 
   //draw ship
-  ship_pos.add(ship_vel.mult(dt));
   fill(color(0, 0, 255));
   circle(ship_pos.x, ship_pos.y, ship_rad);
-
 
   //draw planets
   for (Planet p : planets) {
@@ -130,6 +137,13 @@ void draw() {
     fill(p.col);
     circle(p.pos.x, p.pos.y, p.radius);
   }
+  
+  Planet soi = planets.get(soi_planet);
+  fill(0, 255, 0);
+  noStroke();
+  circle(soi.pos.x, soi.pos.y, soi.radius);
+  
+  
 }
 
 void mousePressed() {

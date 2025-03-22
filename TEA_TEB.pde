@@ -55,7 +55,7 @@ void setup() {
       PVector closest_vec_2 = new PVector(Float.MAX_VALUE, Float.MAX_VALUE);
 
       for (Planet p : planets) {
-        float distance = dist(x, y, p.pos.x, p.pos.y);
+        float distance = sq(dist(x, y, p.pos.x, p.pos.y))/p.mass;
 
         if (distance < closest_2) {
           closest_2 = distance;
@@ -76,17 +76,18 @@ void setup() {
 
       float dist_to_line; {
         PVector line_between_planets = PVector.sub(closest_vec_2, closest_vec_1);
-        PVector point_between_planets = PVector.add(closest_vec_1, PVector.div(line_between_planets, 2));
-        PVector point = new PVector((float)x, (float)y);
-        PVector rpoint = PVector.sub(point_between_planets, point);
-        dist_to_line = PVector.dot(rpoint, line_between_planets)/line_between_planets.mag();
+        //PVector point_between_planets = PVector.add(closest_vec_1, PVector.div(line_between_planets, 2));
+        //PVector point = new PVector((float)x, (float)y);
+        //PVector rpoint = PVector.sub(point_between_planets, point);
+        //dist_to_line = PVector.dot(rpoint, line_between_planets)/line_between_planets.mag();
+        dist_to_line = (closest_2 - closest_1)/line_between_planets.mag();
       }
-      if (dist_to_line < 2) {
+      if (dist_to_line < 0.05) {
        //make line
         grBkgrVoronoi.pixels[x + y * width] = color(0);
       } else {
         //make gradient
-        grBkgrVoronoi.pixels[x + y * width] = color(255 / (1 + closest_1/100), 10, 50);
+        grBkgrVoronoi.pixels[x + y * width] = color(260 / (1 + closest_1/100), 10, 50);
       }
     }
   }

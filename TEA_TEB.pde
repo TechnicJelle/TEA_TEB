@@ -2,7 +2,9 @@ import processing.sound.*;
 
 SoundFile sfxMenu;
 
-PFont fntOrbitron;
+PFont fntOrbitronRegular;
+PFont fntOrbitronBold;
+PFont fntOrbitronBlack;
 
 GameState gameState;
 
@@ -12,7 +14,10 @@ void setup() {
   //fullScreen();
   size(1800, 900);
 
-  fntOrbitron = createFont("fonts/Orbitron/Orbitron-Regular.ttf", 128);
+  fntOrbitronRegular = createFont("fonts/Orbitron/Orbitron-Regular.ttf", 128);
+  fntOrbitronBold = createFont("fonts/Orbitron/Orbitron-Bold.ttf", 128);
+  fntOrbitronBlack = createFont("fonts/Orbitron/Orbitron-Black.ttf", 128);
+
 
   sfxMenu = new SoundFile(this, "sfx/menu.wav");
 

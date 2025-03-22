@@ -2,8 +2,7 @@ import java.util.List;
 
 interface Scene {
   void init();
-  void update();
-  void render();
+  void step();
   void mousePressed();
   void mouseDragged();
   void mouseReleased();
@@ -29,12 +28,7 @@ class GameState {
     return internalScenes.get(currentScene);
   }
 
-  void updateCurrentScene() {
-    if (goToNextScene) return;
-    getCurrentScene().update();
-  }
-
-  void renderCurrentScene() {
+  void stepCurrentScene() {
     if (goToNextScene) {
       sfxMenu.play();
       goToNextScene = false;
@@ -46,7 +40,7 @@ class GameState {
       getCurrentScene().init();
       return;
     }
-    getCurrentScene().render();
+    getCurrentScene().step();
   }
 
   void mousePressedCurrentScene() {

@@ -2,10 +2,7 @@ class Scene_MainMenu implements Scene {
   void init() {
   }
 
-  void update() {
-  }
-
-  void render() {
+  void step() {
     background(0);
     textAlign(CENTER, CENTER);
     textSize(32);

@@ -17,8 +17,7 @@ void setup() {
 }
 
 void draw() {
-  gameState.updateCurrentScene();
-  gameState.renderCurrentScene();
+  gameState.stepCurrentScene();
 }
 
 void mousePressed() {

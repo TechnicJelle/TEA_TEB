@@ -30,7 +30,7 @@ void generate_all_planets_with_constraints() {
     boolean touching = false;
     if (p.pos.x < left_border || width - right_border < p.pos.x) continue;
     if (p.pos.y < top_border || height - bottom_border < p.pos.y) continue;
-    if (PVector.dist(p.pos, ship_pos) < ship_exclusion_radius) continue;
+    if (PVector.dist(p.pos, ship.pos) < ship_exclusion_radius) continue;
     for (int j = i+1; j < initial_planets.size(); j++) {
       Planet q = initial_planets.get(j);
 

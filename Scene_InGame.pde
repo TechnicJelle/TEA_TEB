@@ -83,23 +83,7 @@ class Scene_InGame implements Scene {
             ship.vel.mult(velocity_limit / ship.vel.mag());
           }
 
-          //support wall bouncing
-          if (ship.pos.x > width-right_border || ship.pos.x < left_border) {
-            if (ship.pos.x > width-right_border) {
-              ship.pos.x = width-right_border;
-            } else {
-              ship.pos.x = left_border;
-            }
-            ship.vel.x *= -1;
-          }
-          if (ship.pos.y > height-bottom_border || ship.pos.y < top_border) {
-            if (ship.pos.y > height-bottom_border) {
-              ship.pos.y = height-bottom_border;
-            } else {
-              ship.pos.y = top_border;
-            }
-            ship.vel.y *= -1;
-          }
+          take_care_of_wall_bounce(ship.pos, ship.vel);
         } /* ship simulation step for-loop */
 
         PVector trajectory_pos = ship.pos.copy();
@@ -137,25 +121,7 @@ class Scene_InGame implements Scene {
             trajectory_vel.mult(velocity_limit / trajectory_vel.mag());
           }
 
-          //support wall bouncing
-          if (trajectory_pos.x > width-right_border || trajectory_pos.x < left_border) {
-            if (trajectory_pos.x > width-right_border) {
-              trajectory_pos.x = width-right_border;
-            } else {
-              trajectory_pos.x = left_border;
-            }
-            trajectory_vel.x *= -1;
-          }
-          if (trajectory_pos.y > height-bottom_border || trajectory_pos.y < top_border) {
-            if (trajectory_pos.y > height-bottom_border) {
-              trajectory_pos.y = height-bottom_border;
-            } else {
-              trajectory_pos.y = top_border;
-            }
-            trajectory_vel.y *= -1;
-          }
-
-          //take_care_of_wall_bounce(trajectory_pos, trajectory_vel);
+          take_care_of_wall_bounce(trajectory_pos, trajectory_vel);
 
           trajectory[i] = trajectory_pos.copy();
           trajectory_sois[i] = soi_planet;

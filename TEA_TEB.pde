@@ -5,9 +5,11 @@ ArrayList<Planet> planets;
 PGraphics grBkgrVoronoi;
 
 PVector ship_pos;
-PVector ship_vel = new PVector(-25, 0);
+PVector ship_vel = new PVector(-50, 0);
 PVector ship_acc = new PVector(0, 0);
-float dt = .1;
+
+float ship_rad = 10;
+float dt = 0.2;
 
 void setup() {
   fullScreen();
@@ -18,7 +20,7 @@ void setup() {
 
 
   for (int i = 0; i < 250; i++) {
-    initial_planets.add(new Planet(new PVector(random(width), random(height)), random(0, 100), random(2, 20), color(255)));
+    initial_planets.add(new Planet(new PVector(random(width), random(height)), random(10, 20), random(2, 20), color(255)));
   }
 
   for (int i = 0; i < initial_planets.size(); i++) {
@@ -36,7 +38,6 @@ void setup() {
 
 
   //do img array stuff
-
   grBkgrVoronoi = createGraphics(width, height);
   grBkgrVoronoi.beginDraw();
   grBkgrVoronoi.background(0);
@@ -96,20 +97,39 @@ void setup() {
 void draw() {
   image(grBkgrVoronoi, 0, 0);
 
-
-  for (int i = 0; i < 10; i++) {
+  // update ship position based on gravity
+  for (int i = 0; i < 250; i++) {
     ship_acc = new PVector(0, 0);
 
-
+    boolean touching = false;
     for (Planet p : planets) {
       PVector difference = PVector.sub(ship_pos, p.pos);
-      ship_acc.add(difference.div(sq(difference.mag())).mult(-p.mass));
+      float sq_distance = sq(difference.mag());
+      ship_acc.add(difference.normalize().mult(-p.mass / sq_distance));
+
+      if (sq_distance < sq(p.radius + ship_rad)) {
+        touching = true;
+      }
     }
 
     ship_vel.add(ship_acc.mult(dt));
-    ship_pos.add(ship_vel.mult(dt));
+
+    //shitty collisions
+    if (touching) {ship_vel.mult(-1);}
   }
-  circle(ship_pos.x, ship_pos.y, 50);
+
+  //draw ship
+  ship_pos.add(ship_vel.mult(dt));
+  fill(color(0, 0, 255));
+  circle(ship_pos.x, ship_pos.y, ship_rad);
+
+
+  //draw planets
+  for (Planet p : planets) {
+    noStroke();
+    fill(p.col);
+    circle(p.pos.x, p.pos.y, p.radius);
+  }
 }
 
 void mousePressed() {

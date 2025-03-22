@@ -178,6 +178,30 @@ class Scene_InGame implements Scene {
   }
 
   void keyPressed() {
+    if (key == CODED) {
+      switch(keyCode) {
+      case LEFT:
+        if (flying_paused == true) {
+          PVector velocity_increment_left = new PVector(ship.vel.y, -ship.vel.x);
+          ship.vel.add(velocity_increment_left.mult(.1));
+          break;
+        }
+
+
+      case RIGHT:
+        if (flying_paused == true) {
+          PVector velocity_increment_right = new PVector(-ship.vel.y, ship.vel.x);
+          ship.vel.add(velocity_increment_right.mult(.1));
+          break;
+        }
+      }
+    } else {
+      switch(key) {
+      case ' ':
+        flying_paused = false;
+        break;
+      }
+    }
   }
 
   void keyReleased() {

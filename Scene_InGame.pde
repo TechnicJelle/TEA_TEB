@@ -29,17 +29,27 @@ int adjustment_count = 0;
 float cost_per_adjustment = 2;
 
 class Scene_InGame implements Scene {
+  float screwAngleLB;
+  float screwAngleLT;
+  float screwAngleRB;
+  float screwAngleRT;
+
   void init() {
     ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(0, 255, 255));
 
     frameCounter = 0;
+
+    screwAngleLB = random(0, TWO_PI);
+    screwAngleLT = random(0, TWO_PI);
+    screwAngleRB = random(0, TWO_PI);
+    screwAngleRT = random(0, TWO_PI);
   }
 
   void step() {
     if (frameCounter == 0) {
       background(0);
       textAlign(CENTER, CENTER);
-      textFont(fntOrbitron);
+      textFont(fntOrbitronRegular);
       fill(GREEN);
 
       textSize(64);
@@ -89,8 +99,44 @@ class Scene_InGame implements Scene {
       //  fill(0, 255, 0);
       //    noStroke();
       //      circle(soi.pos.x, soi.pos.y, soi.radius);
+
+      drawUI();
     }
     frameCounter++;
+  }
+
+  void drawUI() {
+    //panel
+    fill(200);
+    noStroke();
+    rectMode(CORNERS);
+    float y_padding = 10;
+    float left = left_border/2;
+    float bottom = height - y_padding;
+    float right = width - right_border/2;
+    float top = height - bottom_border + y_padding;
+    rect(left, bottom, right, top, 28);
+    float screw_offset = 24;
+    drawScrew(left + screw_offset, bottom - screw_offset, screwAngleLB);
+    drawScrew(left + screw_offset, top + screw_offset, screwAngleLT);
+    drawScrew(right - screw_offset, bottom - screw_offset, screwAngleRB);
+    drawScrew(right - screw_offset, top + screw_offset, screwAngleRT);
+  }
+
+  void drawScrew(float x, float y, float angle) {
+    noStroke();
+    fill(64);
+    pushMatrix();
+    translate(x, y);
+    float diam = 32;
+    circle(0, 0, diam);
+    rotate(angle);
+    strokeWeight(3);
+    stroke(20);
+    diam *= 0.3;
+    line(-diam, 0, diam, 0);
+    line(0, -diam, 0, diam);
+    popMatrix();
   }
 
   void mousePressed() {

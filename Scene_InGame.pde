@@ -6,7 +6,7 @@ float dt = 0.05;
 float G = 5;
 float velocity_limit = 25;
 
-int soi_planet = 0;
+//int soi_planet = 0;
 int last_soi_planet = 0;
 
 int left_border = 50;
@@ -46,94 +46,17 @@ class Scene_InGame implements Scene {
       draw_voronoi_to_background();
     } else {
       if (!flying_paused) { /* flying paused if-statement */
+        //int soi_planet = last_soi_planet;
         for (int i = 0; i < 10; i++) {/* ship simulation step for-loop */
-          ship.acc = new PVector(0, 0);
-          float largest_grav_force = 0;
-
-          for (int j = 0; j < planets.size(); j++) {
-            Planet p = planets.get(j);
-
-            PVector difference = PVector.sub(ship.pos, p.pos);
-            float sq_distance = sq(difference.mag());
-            float gravitational_force = G * p.mass / sq_distance;
-
-            //if bigger, set new soi
-            if (gravitational_force > largest_grav_force) {
-              largest_grav_force = gravitational_force;
-              soi_planet = j;
-            }
-          }
-
+          int soi_planet = continuation_in_space(ship.pos, ship.vel, ship.acc);
           if (soi_planet != last_soi_planet) {
             flying_paused = true;
             last_soi_planet = soi_planet;
             break;
           }
-
-          //do the soi stuff
-          Planet soi = planets.get(soi_planet);
-          PVector difference = PVector.sub(ship.pos, soi.pos);
-          float sq_distance = 1 + sq(difference.mag());
-          ship.acc.add(difference.normalize().mult(-G * soi.mass / sq_distance));
-          ship.vel.add(PVector.mult(ship.acc, dt));
-          ship.pos.add(PVector.mult(ship.vel, dt));
-
-          //limit velocity
-          if (ship.vel.mag() > velocity_limit) {
-            ship.vel.mult(velocity_limit / ship.vel.mag());
-          }
-
-          take_care_of_wall_bounce(ship.pos, ship.vel);
         } /* ship simulation step for-loop */
 
-        PVector trajectory_pos = ship.pos.copy();
-        PVector trajectory_vel = ship.vel.copy();
-        PVector trajectory_acc;
-
-        for (int i = 0; i < trajectory_lookahead; i++) { /* trajectory for-loop */
-          trajectory_acc = new PVector(0, 0);
-          float largest_grav_force = 0;
-
-          for (int j = 0; j < planets.size(); j++) {
-            Planet p = planets.get(j);
-
-            PVector difference = PVector.sub(trajectory_pos, p.pos);
-            float sq_distance = sq(difference.mag());
-            float gravitational_force = G * p.mass / sq_distance;
-
-            //if bigger, set new soi
-            if (gravitational_force > largest_grav_force) {
-              largest_grav_force = gravitational_force;
-              soi_planet = j;
-            }
-          }
-
-          //do the soi stuff
-          Planet soi = planets.get(soi_planet);
-          PVector difference = PVector.sub(trajectory_pos, soi.pos);
-          float sq_distance = 1 + sq(difference.mag());
-          trajectory_acc.add(difference.normalize().mult(-G * soi.mass / sq_distance));
-          trajectory_vel.add(PVector.mult(trajectory_acc, dt));
-          trajectory_pos.add(PVector.mult(trajectory_vel, dt));
-
-          //limit velocity
-          if (trajectory_vel.mag() > velocity_limit) {
-            trajectory_vel.mult(velocity_limit / trajectory_vel.mag());
-          }
-
-          take_care_of_wall_bounce(trajectory_pos, trajectory_vel);
-
-          trajectory[i] = trajectory_pos.copy();
-          trajectory_sois[i] = soi_planet;
-        } /* trajectory for-loop */
-
-        going_to_die = true;
-        //test if trajectory gets stuck
-        for (int v = trajectory_lookahead - trajectory_lookahead/3; v < trajectory_lookahead; v++) {
-          if (trajectory_sois[v] != trajectory_sois[v-1]) {
-            going_to_die = false;
-          }
-        }
+        actual_trajectory_calculation();
       } /* flying paused if-statement */
 
       image(grBkgrVoronoi, 0, 0);

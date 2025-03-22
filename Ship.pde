@@ -5,6 +5,7 @@ class Ship {
 
   float radius;
   color col;
+  float fuel;
 
   Ship(PVector p, PVector v, float r, color c) {
     pos = p;
@@ -12,6 +13,7 @@ class Ship {
     acc = new PVector(0, 0);
     radius = r;
     col = c;
+    fuel = 100;
   }
 }
 

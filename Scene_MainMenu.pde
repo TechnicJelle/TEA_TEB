@@ -12,11 +12,10 @@ class Scene_MainMenu implements Scene {
     text("TEA_TEB", width/2f, height*0.2);
 
     textSize(32);
-    text("Click anywhere to start...", width/2f, height*0.7);
+    text("Press space to start...", width/2f, height*0.7);
   }
 
   void mousePressed() {
-    gameState.nextScene();
   }
 
   void mouseDragged() {
@@ -26,6 +25,7 @@ class Scene_MainMenu implements Scene {
   }
 
   void keyPressed() {
+    gameState.nextScene();
   }
 
   void keyReleased() {

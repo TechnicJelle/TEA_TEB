@@ -19,7 +19,10 @@ void generate_all_planets_with_constraints() {
 
 
   for (int i = 0; i < 250; i++) {
-    initial_planets.add(new Planet(new PVector(random(width), random(height)), random(1, 200), random(2, 20), color(255)));
+    Planet plant = new Planet(new PVector(random(width), random(height)), random(1, 200), random(2, 20), color(255));
+    plant.radius = 2;
+    plant.radius += 20*(plant.mass-1)/200;
+    initial_planets.add(plant);
   }
 
   for (int i = 0; i < initial_planets.size(); i++) {

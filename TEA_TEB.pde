@@ -4,11 +4,8 @@ ArrayList<Planet> planets;
 
 PGraphics grBkgrVoronoi;
 
-PVector ship_pos;
-PVector ship_vel = new PVector(-5, 0);
-PVector ship_acc = new PVector(0, 0);
+Ship ship;
 
-float ship_rad = 15;
 float dt = 0.05;
 float G = 5;
 float velocity_limit = 25;
@@ -28,7 +25,8 @@ float ship_exclusion_radius = 100;
 void setup() {
   //fullScreen();
   size(1800, 900);
-  ship_pos = new PVector(19 * width / 20, height / 2);
+  
+  ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(0, 255, 255));
 
   ArrayList<Planet> initial_planets = new ArrayList<Planet>();
   planets = new ArrayList<Planet>();
@@ -43,7 +41,7 @@ void setup() {
     boolean touching = false;
     if (p.pos.x < left_border || width - right_border < p.pos.x) continue;
     if (p.pos.y < top_border || height - bottom_border < p.pos.y) continue;
-    if (PVector.dist(p.pos, ship_pos) < ship_exclusion_radius) continue;
+    if (PVector.dist(p.pos, ship.pos) < ship_exclusion_radius) continue;
     for (int j = i+1; j < initial_planets.size(); j++) {
       Planet q = initial_planets.get(j);
 
@@ -121,13 +119,13 @@ void draw() {
 
 
   for (int i = 0; i < 10; i++) {
-    ship_acc = new PVector(0, 0);
+    ship.acc = new PVector(0, 0);
     float largest_grav_force = 0;
 
     for (int j = 0; j < planets.size(); j++) {
       Planet p = planets.get(j);
 
-      PVector difference = PVector.sub(ship_pos, p.pos);
+      PVector difference = PVector.sub(ship.pos, p.pos);
       float sq_distance = sq(difference.mag());
       float gravitational_force = G * p.mass / sq_distance;
 
@@ -147,38 +145,38 @@ void draw() {
 
     //do the soi stuff
     Planet soi = planets.get(soi_planet);
-    PVector difference = PVector.sub(ship_pos, soi.pos);
+    PVector difference = PVector.sub(ship.pos, soi.pos);
     float sq_distance = 1 + sq(difference.mag());
-    ship_acc.add(difference.normalize().mult(-G * soi.mass / sq_distance));
-    ship_vel.add(PVector.mult(ship_acc, dt));
-    ship_pos.add(PVector.mult(ship_vel, dt));
+    ship.acc.add(difference.normalize().mult(-G * soi.mass / sq_distance));
+    ship.vel.add(PVector.mult(ship.acc, dt));
+    ship.pos.add(PVector.mult(ship.vel, dt));
 
     //limit velocity
-    if (ship_vel.mag() > velocity_limit) {
-      ship_vel.mult(velocity_limit / ship_vel.mag());
+    if (ship.vel.mag() > velocity_limit) {
+      ship.vel.mult(velocity_limit / ship.vel.mag());
     }
 
     //support wall bouncing
-    if (ship_pos.x > width-right_border || ship_pos.x < left_border) {
-      if (ship_pos.x > width-right_border) {
-        ship_pos.x = width-right_border;
+    if (ship.pos.x > width-right_border || ship.pos.x < left_border) {
+      if (ship.pos.x > width-right_border) {
+        ship.pos.x = width-right_border;
       } else {
-        ship_pos.x = left_border;
+        ship.pos.x = left_border;
       }
-      ship_vel.x *= -1;
+      ship.vel.x *= -1;
     }
-    if (ship_pos.y > height-bottom_border || ship_pos.y < top_border) {
-      if (ship_pos.y > height-bottom_border) {
-        ship_pos.y = height-bottom_border;
+    if (ship.pos.y > height-bottom_border || ship.pos.y < top_border) {
+      if (ship.pos.y > height-bottom_border) {
+        ship.pos.y = height-bottom_border;
       } else {
-        ship_pos.y = top_border;
+        ship.pos.y = top_border;
       }
-      ship_vel.y *= -1;
+      ship.vel.y *= -1;
     }
   }
 
-  PVector trajectory_pos = ship_pos.copy();
-  PVector trajectory_vel = ship_vel.copy();
+  PVector trajectory_pos = ship.pos.copy();
+  PVector trajectory_vel = ship.vel.copy();
   PVector trajectory_acc;
 
   PVector[] trajectory = new PVector[trajectory_lookahead];
@@ -264,11 +262,11 @@ void draw() {
 
   //draw ship
   if (going_to_die) {
-    fill(color(255, 100, 0));
+    fill(ship.col);
   } else {
     fill(color(0, 255, 255));
   }
-  circle(ship_pos.x, ship_pos.y, ship_rad);
+  circle(ship.pos.x, ship.pos.y, ship.radius);
 
   //draw all planets
   for (Planet p : planets) {

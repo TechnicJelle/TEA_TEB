@@ -19,7 +19,8 @@ int last_soi_planet = 0;
 int left_border = 100;
 int right_border = 100;
 int top_border = 50;
-int bottom_border = 50;
+int bottom_border = 200;
+float ship_exclusion_radius = 100;
 
 void setup() {
   //fullScreen();
@@ -37,6 +38,9 @@ void setup() {
   for (int i = 0; i < initial_planets.size(); i++) {
     Planet p = initial_planets.get(i);
     boolean touching = false;
+    if (p.pos.x < left_border || width - right_border < p.pos.x) continue;
+    if (p.pos.y < top_border || height - bottom_border < p.pos.y) continue;
+    if (PVector.dist(p.pos, ship_pos) < ship_exclusion_radius) continue;
     for (int j = i+1; j < initial_planets.size(); j++) {
       Planet q = initial_planets.get(j);
 

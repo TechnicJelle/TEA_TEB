@@ -121,6 +121,66 @@ class Scene_InGame implements Scene {
     drawScrew(left + screw_offset, top + screw_offset, screwAngleLT);
     drawScrew(right - screw_offset, bottom - screw_offset, screwAngleRB);
     drawScrew(right - screw_offset, top + screw_offset, screwAngleRT);
+
+    //content
+    float content_x_padding = 48;
+    float content_height = bottom - top - y_padding*2;
+    translate(left + content_x_padding, top + y_padding);
+
+    //Going To Die -indicator
+    drawDeepRect(content_height, content_height);
+
+    pushMatrix();
+    translate(content_height*0.50, content_height*0.40);
+    scale(0.35);
+
+    if (going_to_die) {
+      fill(247, 198, 75);
+      stroke(0);
+      strokeWeight(5);
+      strokeJoin(ROUND);
+    } else {
+      fill(50);
+    }
+    triangle(
+      0, -content_height/2, //top
+      -content_height/2, content_height/2, //bottom left
+      content_height/2, content_height/2 //bottom right
+      );
+
+    if (going_to_die) {
+      textAlign(CENTER, CENTER);
+      textSize(120);
+      fill(50);
+      text("!", -2, 12);
+    }
+
+    popMatrix();
+    strokeJoin(MITER);
+
+    if (going_to_die) {
+      fill(GREEN);
+    } else {
+      fill(100);
+    }
+    textFont(fntOrbitronBold);
+    textSize(24);
+    textAlign(CENTER, TOP);
+    text("WARNING:", content_height/2, 10);
+    textFont(fntOrbitronBlack);
+    textSize(16);
+    textAlign(CENTER, BOTTOM);
+    text("Potential\nCollission\nImminent!", content_height/2, content_height - 3);
+  }
+
+  void drawDeepRect(float rWidth, float rHeight) {
+    float depth = 5;
+    noStroke();
+    rectMode(CORNER);
+    fill(100);
+    rect(0, 0, rWidth, rHeight);
+    fill(128);
+    rect(depth, depth, rWidth-depth, rHeight-depth);
   }
 
   void drawScrew(float x, float y, float angle) {

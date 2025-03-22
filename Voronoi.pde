@@ -42,7 +42,7 @@ void draw_voronoi_to_background() {
         //dist_to_line = PVector.dot(rpoint, line_between_planets)/line_between_planets.mag();
         dist_to_line = (closest_2 - closest_1)/line_between_planets.mag();
       }
-      if (dist_to_line < 0.05) {
+      if (dist_to_line < 0.03) {
         //make line
         grBkgrVoronoi.pixels[x + y * width] = color(0);
       } else {

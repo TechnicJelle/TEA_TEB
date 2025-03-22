@@ -15,6 +15,7 @@ int top_border = 50;
 int bottom_border = 200;
 
 int trajectory_lookahead = 2500;
+boolean going_to_die = true;
 
 float ship_exclusion_radius = 100;
 
@@ -107,6 +108,7 @@ class Scene_InGame implements Scene {
       PVector trajectory_acc;
 
       PVector[] trajectory = new PVector[trajectory_lookahead];
+      int[] trajectory_sois = new int[trajectory_lookahead];
 
       // for the trajectory stuff
       for (int i = 0; i < trajectory_lookahead; i++) {
@@ -169,29 +171,24 @@ class Scene_InGame implements Scene {
         circle(trajectory_pos.x, trajectory_pos.y, 2);
 
         trajectory[i] = trajectory_pos;
+        trajectory_sois[i] = soi_planet;
       }
 
       Planet soi = planets.get(soi_planet);
 
 
       //test if trajectory gets stuck
-      boolean going_to_die = false;
-
-      float sum = 0;
-      for (int v = trajectory_lookahead - 500; v < trajectory_lookahead; v++) {
-        sum += sq(PVector.sub(trajectory[v], soi.pos).mag());
+      for (int v = trajectory_lookahead - trajectory_lookahead/3; v < trajectory_lookahead; v++) {
+        if (trajectory_sois[v] != trajectory_sois[v-1]) {
+          going_to_die = false; 
+        }
       }
-
-      if (sum/500 < soi.radius) {
-        going_to_die = true;
-      }
-
 
       //draw ship
       if (going_to_die) {
-        fill(ship.col);
+        fill(color(255, 100, 100));
       } else {
-        fill(color(0, 255, 255));
+        fill(ship.col);
       }
       circle(ship.pos.x, ship.pos.y, ship.radius);
 

@@ -15,7 +15,7 @@ int top_border = 50;
 int bottom_border = 200;
 
 int trajectory_lookahead = 2500;
-boolean going_to_die = true;
+boolean going_to_die;
 
 float ship_exclusion_radius = 100;
 
@@ -177,6 +177,7 @@ class Scene_InGame implements Scene {
       Planet soi = planets.get(soi_planet);
 
 
+      going_to_die = true;
       //test if trajectory gets stuck
       for (int v = trajectory_lookahead - trajectory_lookahead/3; v < trajectory_lookahead; v++) {
         if (trajectory_sois[v] != trajectory_sois[v-1]) {

@@ -166,11 +166,11 @@ void draw() {
       }
       ship_vel.x *= -1;
     }
-    if (ship_pos.y > height-top_border || ship_pos.y < bottom_border) {
-      if (ship_pos.y > height-top_border) {
-        ship_pos.y = height-top_border;
+    if (ship_pos.y > height-bottom_border || ship_pos.y < top_border) {
+      if (ship_pos.y > height-bottom_border) {
+        ship_pos.y = height-bottom_border;
       } else {
-        ship_pos.y = bottom_border;
+        ship_pos.y = top_border;
       }
       ship_vel.y *= -1;
     }

@@ -251,7 +251,7 @@ void draw() {
   boolean going_to_die = false;
   
   float sum = 0;
-  for(int v = 2000; v < 2500; v++){
+  for(int v = trajectory_lookahead - 500; v < trajectory_lookahead; v++){
     sum += sq(PVector.sub(trajectory[v], soi.pos).mag());
   }
 

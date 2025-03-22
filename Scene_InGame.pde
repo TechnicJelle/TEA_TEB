@@ -202,7 +202,7 @@ class Scene_InGame implements Scene {
     textFont(fntOrbitronBlack);
     textSize(16);
     textAlign(CENTER, BOTTOM);
-    text("Potential\nCollission\nImminent!", content_height/2, content_height - 3);
+    text("Potential\nCollision\nImminent!", content_height/2, content_height - 3);
   }
 
   void drawDeepRect(float rWidth, float rHeight) {

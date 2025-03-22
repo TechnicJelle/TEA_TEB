@@ -17,7 +17,6 @@ void generate_all_planets_with_constraints() {
   ArrayList<Planet> initial_planets = new ArrayList<Planet>();
   planets = new ArrayList<Planet>();
 
-
   for (int i = 0; i < 250; i++) {
     Planet plant = new Planet(new PVector(random(width), random(height)), random(1, 200), random(2, 20), color(255));
     plant.radius = 2;

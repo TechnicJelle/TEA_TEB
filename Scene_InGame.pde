@@ -23,7 +23,16 @@ boolean going_to_die;
 float ship_exclusion_radius = 100;
 
 boolean flying_paused = false;
-int frameCounter = 0;
+VoronoiCalculationStage _voronoiCalculationStage;
+enum VoronoiCalculationStage {
+  FIRST_BACKGROUND, CALCULATING, IN_GAME, RE_BACKGROUND, RE_CALCULATING
+}
+
+void recalc_voronoi() {
+  if (_voronoiCalculationStage == VoronoiCalculationStage.IN_GAME) {
+    _voronoiCalculationStage = VoronoiCalculationStage.RE_BACKGROUND;
+  }
+}
 
 int adjustment_count = 0;
 float cost_per_adjustment = 2;
@@ -37,7 +46,7 @@ class Scene_InGame implements Scene {
   void init() {
     ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(0, 255, 255));
 
-    frameCounter = 0;
+    _voronoiCalculationStage = VoronoiCalculationStage.FIRST_BACKGROUND;
 
     screwAngleLB = random(0, TWO_PI);
     screwAngleLT = random(0, TWO_PI);
@@ -46,7 +55,8 @@ class Scene_InGame implements Scene {
   }
 
   void step() {
-    if (frameCounter == 0) {
+    switch(_voronoiCalculationStage) {
+    case FIRST_BACKGROUND:
       background(0);
       textAlign(CENTER, CENTER);
       textFont(fntOrbitronRegular);
@@ -54,10 +64,15 @@ class Scene_InGame implements Scene {
 
       textSize(64);
       text("Calculating Trajectory...", width/2f, height/2f);
-    } else if (frameCounter == 1) {
+      _voronoiCalculationStage = VoronoiCalculationStage.CALCULATING;
+      break;
+    case CALCULATING:
+      //no need for any drawing; the stuff from last frame is still on screen
       generate_all_planets_with_constraints();
       draw_voronoi_to_background();
-    } else {
+      _voronoiCalculationStage = VoronoiCalculationStage.IN_GAME;
+      break;
+    case IN_GAME:
       if (!flying_paused) { /* flying paused if-statement */
         //int soi_planet = last_soi_planet;
         for (int i = 0; i < 10; i++) {/* ship simulation step for-loop */
@@ -101,8 +116,25 @@ class Scene_InGame implements Scene {
       //      circle(soi.pos.x, soi.pos.y, soi.radius);
 
       drawUI();
+      break;
+    case RE_BACKGROUND:
+      tint(100);
+      image(grBkgrVoronoi, 0, 0);
+      noTint();
+      textAlign(CENTER, CENTER);
+      textFont(fntOrbitronRegular);
+      fill(GREEN);
+
+      textSize(64);
+      text("Re-Calculating Trajectory...", width/2f, height/2f);
+      _voronoiCalculationStage = VoronoiCalculationStage.RE_CALCULATING;
+      break;
+    case RE_CALCULATING:
+      image(grBkgrVoronoi, 0, 0);
+      draw_voronoi_to_background();
+      _voronoiCalculationStage = VoronoiCalculationStage.IN_GAME;
+      break;
     }
-    frameCounter++;
   }
 
   void drawUI() {

@@ -2,11 +2,17 @@ import processing.sound.*;
 
 SoundFile sfxMenu;
 
+PFont fntOrbitron;
+
 GameState gameState;
+
+color GREEN = color(32, 255, 64);
 
 void setup() {
   //fullScreen();
   size(1800, 900);
+
+  fntOrbitron = createFont("fonts/Orbitron/Orbitron-Regular.ttf", 128);
 
   sfxMenu = new SoundFile(this, "sfx/menu.wav");
 

@@ -31,8 +31,10 @@ class Scene_InGame implements Scene {
     if (frameCounter == 0) {
       background(0);
       textAlign(CENTER, CENTER);
-      textSize(32);
-      fill(255);
+      textFont(fntOrbitron);
+      fill(GREEN);
+
+      textSize(64);
       text("Calculating Trajectory...", width/2f, height/2f);
     } else if (frameCounter == 1) {
       generate_all_planets_with_constraints();

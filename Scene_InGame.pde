@@ -25,6 +25,9 @@ float ship_exclusion_radius = 100;
 boolean flying_paused = false;
 int frameCounter = 0;
 
+int adjustment_count = 0;
+float cost_per_adjustment = 2;
+
 class Scene_InGame implements Scene {
   void init() {
     ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(0, 255, 255));
@@ -91,7 +94,6 @@ class Scene_InGame implements Scene {
   }
 
   void mousePressed() {
-    flying_paused = false;
   }
 
   void mouseDragged() {
@@ -101,30 +103,47 @@ class Scene_InGame implements Scene {
   }
 
   void keyPressed() {
+    PVector velocity_increment = new PVector(ship.vel.y, -ship.vel.x);
+    velocity_increment.normalize().mult(0.001);
     if (key == CODED) {
       switch(keyCode) {
       case LEFT:
         if (flying_paused == true) {
-          PVector velocity_increment_left = new PVector(ship.vel.y, -ship.vel.x);
-          ship.vel.add(velocity_increment_left.mult(.1));
-          break;
+          if (ship.fuel <= 0 || abs(adjustment_count)*cost_per_adjustment > ship.fuel) {
+              if (adjustment_count < 0) adjustment_count += 1;
+              break;
+          }
+          adjustment_count += 1;
+          ship.vel.add(velocity_increment);
+          actual_trajectory_calculation();
         }
-
+        break;
 
       case RIGHT:
         if (flying_paused == true) {
-          PVector velocity_increment_right = new PVector(-ship.vel.y, ship.vel.x);
-          ship.vel.add(velocity_increment_right.mult(.1));
-          break;
+          if (ship.fuel <= 0 || abs(adjustment_count)*cost_per_adjustment > ship.fuel) {
+              if (adjustment_count > 0) adjustment_count -= 1;
+              break;
+          }
+          adjustment_count -= 1;
+          ship.vel.sub(velocity_increment);
+          actual_trajectory_calculation();
         }
+        break;
       }
     } else {
       switch(key) {
       case ' ':
         flying_paused = false;
+        ship.fuel -= abs(adjustment_count)*cost_per_adjustment;
+        ship.fuel = max(ship.fuel, 0.0);
+        ship.fuel = min(ship.fuel, 100.0);
+        adjustment_count = 0;
         break;
       }
     }
+    println(ship.fuel, adjustment_count);
+
   }
 
   void keyReleased() {

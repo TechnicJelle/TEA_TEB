@@ -248,8 +248,8 @@ class Scene_InGame implements Scene {
       case LEFT:
         if (flying_paused == true) {
           if (ship.fuel <= 0 || abs(adjustment_count)*cost_per_adjustment > ship.fuel) {
-              if (adjustment_count < 0) adjustment_count += 1;
-              break;
+            if (adjustment_count < 0) adjustment_count += 1;
+            break;
           }
           adjustment_count += 1;
           ship.vel.add(velocity_increment);
@@ -260,8 +260,8 @@ class Scene_InGame implements Scene {
       case RIGHT:
         if (flying_paused == true) {
           if (ship.fuel <= 0 || abs(adjustment_count)*cost_per_adjustment > ship.fuel) {
-              if (adjustment_count > 0) adjustment_count -= 1;
-              break;
+            if (adjustment_count > 0) adjustment_count -= 1;
+            break;
           }
           adjustment_count -= 1;
           ship.vel.sub(velocity_increment);
@@ -278,10 +278,12 @@ class Scene_InGame implements Scene {
         ship.fuel = min(ship.fuel, 100.0);
         adjustment_count = 0;
         break;
+      case 'v':
+        recalc_voronoi();
+        break;
       }
     }
     println(ship.fuel, adjustment_count);
-
   }
 
   void keyReleased() {

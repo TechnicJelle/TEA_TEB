@@ -16,7 +16,8 @@ int soi_planet = 0;
 int last_soi_planet = 0;
 
 void setup() {
-  fullScreen();
+  //fullScreen();
+  size(1800, 900);
   ship_pos = new PVector(19 * width / 20, height / 2);
 
   ArrayList<Planet> initial_planets = new ArrayList<Planet>();
@@ -135,6 +136,12 @@ void draw() {
     PVector difference = PVector.sub(ship_pos, soi.pos);
     float sq_distance = 1 + sq(difference.mag());
     ship_acc.add(difference.normalize().mult(-G * soi.mass / sq_distance));
+
+    //limit velocity
+    if (ship_vel.mag() > 100){
+      ship_vel.mult(100 / ship_vel.mag());
+    }
+
 
     ship_vel.add(PVector.mult(ship_acc, dt));
     ship_pos.add(PVector.mult(ship_vel, dt));

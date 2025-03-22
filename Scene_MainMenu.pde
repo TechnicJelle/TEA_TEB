@@ -5,12 +5,13 @@ class Scene_MainMenu implements Scene {
   void step() {
     background(0);
     textAlign(CENTER, CENTER);
-    textFont(fntOrbitron);
     fill(GREEN);
 
+    textFont(fntOrbitronBlack);
     textSize(128);
     text("TEA_TEB", width/2f, height*0.2);
 
+    textFont(fntOrbitronRegular);
     textSize(32);
     text("Press space to start...", width/2f, height*0.7);
   }

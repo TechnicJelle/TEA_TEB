@@ -8,8 +8,12 @@ PVector ship_pos;
 PVector ship_vel = new PVector(-5, 0);
 PVector ship_acc = new PVector(0, 0);
 
-float ship_rad = 10;
-float dt = 0.2;
+float ship_rad = 15;
+float dt = 0.05;
+float G = 5;
+
+int soi_planet = 0;
+int last_soi_planet = 0;
 
 void setup() {
   fullScreen();
@@ -20,7 +24,7 @@ void setup() {
 
 
   for (int i = 0; i < 250; i++) {
-    initial_planets.add(new Planet(new PVector(random(width), random(height)), random(10, 20), random(2, 20), color(255)));
+    initial_planets.add(new Planet(new PVector(random(width), random(height)), random(1, 200), random(2, 20), color(255)));
   }
 
   for (int i = 0; i < initial_planets.size(); i++) {
@@ -98,8 +102,9 @@ void draw() {
   image(grBkgrVoronoi, 0, 0);
 
   // update ship position based on gravity
-  int soi_planet = 0;
-  for (int i = 0; i < 2; i++) {
+
+  
+  for (int i = 0; i < 10; i++) {
     ship_acc = new PVector(0, 0);
     float largest_grav_force = 0;
 
@@ -108,7 +113,7 @@ void draw() {
       
       PVector difference = PVector.sub(ship_pos, p.pos);
       float sq_distance = sq(difference.mag());   
-      float gravitational_force = p.mass / sq_distance;
+      float gravitational_force = G * p.mass / sq_distance;
       
       //if bigger, set new soi
       if(gravitational_force > largest_grav_force){
@@ -116,19 +121,31 @@ void draw() {
         soi_planet = j;
       }     
     }
-
+    
+    if (soi_planet != last_soi_planet){
+      noLoop();
+      last_soi_planet = soi_planet;
+      break;
+    }
+    
+    
     //do the soi stuff
     Planet soi = planets.get(soi_planet);
     PVector difference = PVector.sub(ship_pos, soi.pos);
-    float sq_distance = sq(difference.mag());
-    ship_acc.add(difference.normalize().mult(-soi.mass / sq_distance));
+    float sq_distance = 1 + sq(difference.mag());
+    ship_acc.add(difference.normalize().mult(-G * soi.mass / sq_distance));
 
     ship_vel.add(PVector.mult(ship_acc, dt));
     ship_pos.add(PVector.mult(ship_vel, dt));
+    
+    //support wrap-around
+    ship_pos.x = ship_pos.x % width;
+    ship_pos.y = ship_pos.y % height;
+    
   }
 
   //draw ship
-  fill(color(0, 0, 255));
+  fill(color(200));
   circle(ship_pos.x, ship_pos.y, ship_rad);
 
   //draw planets
@@ -147,4 +164,5 @@ void draw() {
 }
 
 void mousePressed() {
+  loop();
 }

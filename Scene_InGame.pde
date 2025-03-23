@@ -34,6 +34,10 @@ void recalc_voronoi() {
   }
 }
 
+boolean pointOverSelfExplodeButton(float x, float y) {
+  return x > width * 0.792 && x < width * 0.976 && y > height * 0.785 && y < height * 1.000;
+}
+
 int adjustment_count = 0; //how much steering adjustment has been made for the next move
 float cost_per_adjustment = 2; //how much fuel one adjustment costs
 
@@ -215,6 +219,63 @@ class Scene_InGame implements Scene {
     text("Potential\nCollision\nImminent!", content_height/2, content_height - 3);
 
     popMatrix(); // <-- left panel content
+
+    //-----------------------------------
+
+    pushMatrix(); // right panel content -->
+    translate(right - content_x_padding, top + y_padding);
+
+    //Button: Restart
+
+    boolean buttonHovered = pointOverSelfExplodeButton(mouseX, mouseY);
+    if (buttonHovered) {
+      stroke(150);
+      strokeWeight(4);
+      fill(200, 100);
+
+      quad(
+        content_height * -2.10, content_height * -0.30, //top left
+        content_height * 0.05, content_height * -0.30, //top right
+        content_height * -0.10, content_height * 0.60, //bottom right
+        -content_height * 1.90, content_height * 0.60); //bottom left
+    }
+
+    //button base
+    noStroke();
+    fill(100);
+    rect(0, content_height / 2, -content_height * 2, content_height / 2, 5);
+    //bottom round shade
+    fill(200, 0, 0);
+    ellipse(-content_height, content_height * 0.67, -content_height * 1.7, content_height * 0.50);
+    if (mousePressed && buttonHovered) {
+      rectMode(CENTER);
+      rect(-content_height, content_height * 0.58, -content_height * 1.7, content_height * 0.20);
+      rectMode(CORNER);
+      fill(255, 0, 0);
+      ellipse(-content_height, content_height * 0.48, -content_height * 1.7, content_height * 0.50);
+    } else {
+      rectMode(CENTER);
+      rect(-content_height, content_height * 0.46, -content_height * 1.7, content_height * 0.38);
+      rectMode(CORNER);
+      fill(255, 0, 0);
+      ellipse(-content_height, content_height * 0.25, -content_height * 1.7, content_height * 0.50);
+    }
+    if (!buttonHovered) {
+      stroke(150);
+      strokeWeight(4);
+      fill(200, 100);
+      rect(content_height * -0.05, -content_height * 0.03, -content_height * 1.90, content_height * 0.64, 5, 5, 0, 0);
+
+      noStroke();
+      rect(content_height * -0.05, -content_height * -0.62, -content_height * 1.90, content_height * 0.25);
+
+      stroke(150);
+      strokeWeight(4);
+      line(-content_height * 1.950, -content_height * -0.60, -content_height * 1.95, -content_height * -0.87); //left
+      line(content_height * -0.05, -content_height * -0.60, content_height * -0.05, -content_height * -0.87); //right
+    }
+
+    popMatrix(); // <-- right panel content
   }
 
   void drawDeepRect(float rWidth, float rHeight) {

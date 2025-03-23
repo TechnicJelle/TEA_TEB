@@ -99,7 +99,7 @@ class Scene_InGame implements Scene {
       fill(GREEN);
 
       textSize(64);
-      text("Calculating Trajectory...", width/2f, height/2f);
+      text("Calculating Trajectories...", width/2f, height/2f);
       _voronoiCalculationStage = VoronoiCalculationStage.CALCULATING;
       break;
     case CALCULATING:
@@ -219,7 +219,7 @@ class Scene_InGame implements Scene {
       fill(GREEN);
 
       textSize(64);
-      text("Re-Calculating Trajectory...", width/2f, height/2f);
+      text("Re-Calculating Trajectories...", width/2f, height/2f);
       _voronoiCalculationStage = VoronoiCalculationStage.RE_CALCULATING;
       break;
     case RE_CALCULATING:

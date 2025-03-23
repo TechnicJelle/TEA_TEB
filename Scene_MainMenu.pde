@@ -13,7 +13,7 @@ class Scene_MainMenu implements Scene {
 
     textFont(fntOrbitronRegular);
     textSize(32);
-    text("Press space to start...", width/2f, height*0.7);
+    text("Press space or click to start...", width/2f, height*0.7);
   }
 
   void mousePressed() {

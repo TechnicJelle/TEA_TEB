@@ -37,6 +37,8 @@ void recalc_voronoi() {
 int adjustment_count = 0;
 float cost_per_adjustment = 2;
 
+int premove_amount = 0;
+
 class Scene_InGame implements Scene {
   float screwAngleLB;
   float screwAngleLT;
@@ -78,7 +80,8 @@ class Scene_InGame implements Scene {
         for (int i = 0; i < 10; i++) {/* ship simulation step for-loop */
           int soi_planet = continuation_in_space(ship.pos, ship.vel, ship.acc);
           if (soi_planet != last_soi_planet) {
-            flying_paused = true;
+            if (premove_amount <= 0) flying_paused = true;
+            else premove_amount -= 1;
             last_soi_planet = soi_planet;
             break;
           }
@@ -89,10 +92,16 @@ class Scene_InGame implements Scene {
 
       image(grBkgrVoronoi, 0, 0);
 
+      noStroke();
+      fill(30, 255, 255);
+      int last_soi = trajectory_sois[0];
+      int local_premove_amount = premove_amount;
       for (int i = 0; i < trajectory_lookahead; i++) {
-        noStroke();
-        fill(0, 255, 0);
+        if (local_premove_amount < 0) {
+          fill(0, 255, 0);
+        } else if (trajectory_sois[i] != last_soi) local_premove_amount -= 1;
         circle(trajectory[i].x, trajectory[i].y, 2);
+        last_soi = trajectory_sois[i];
       }
 
       //draw ship
@@ -285,6 +294,9 @@ class Scene_InGame implements Scene {
         recalc_voronoi();
         actual_trajectory_calculation();
         break;
+       case 'p':
+         premove_amount = 10;
+         break;
       }
     }
     println(ship.fuel, adjustment_count);

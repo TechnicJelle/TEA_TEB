@@ -40,3 +40,22 @@ void generate_all_planets_with_constraints() {
     if (!touching) planets.add(p);
   }
 }
+
+int closest_soi(PVector pos) {
+  float largest_grav_force = 0.0;
+  int closest = 0;
+  for (int soi = 0; soi < planets.size(); soi++) {
+    Planet p = planets.get(soi);
+  
+    PVector difference = PVector.sub(pos, p.pos);
+    float sq_distance = sq(difference.mag());
+    float gravitational_force = G * p.mass / sq_distance;
+  
+    //if bigger, set new soi
+    if (gravitational_force > largest_grav_force) {
+      largest_grav_force = gravitational_force;
+      closest = soi;
+    }
+  }
+  return closest;
+}

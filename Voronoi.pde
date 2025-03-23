@@ -48,9 +48,9 @@ void draw_voronoi_to_background() {
       } else {
         //make gradient
         float intensity = sq(255 / (1 + closest_1/100) - 10) / 235;
-        float r = (noise(x/200.f, y/200.f) + noise(x/100.f, y/100.f)) * 0.5 * intensity;
-        float g = (noise(y/200.f, x/200.f) + noise(x/100.f, y/100.f)) * 0.5 * intensity;
-        float b = (noise(y/200.f, x/200.f) + noise(y/100.f, x/100.f)) * 0.5 * intensity;
+        float r = (noise(x/200.0f, y/200.0f) + noise(x/100.0f, y/100.0f)) * 0.5 * intensity;
+        float g = (noise(y/200.0f, x/200.0f) + noise(x/100.0f, y/100.0f)) * 0.5 * intensity;
+        float b = (noise(y/200.0f, x/200.0f) + noise(y/100.0f, x/100.0f)) * 0.5 * intensity;
         grBkgrVoronoi.pixels[x + y * width] = color(r, g, b);
       }
     }

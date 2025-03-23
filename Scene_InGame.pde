@@ -2,22 +2,22 @@ ArrayList<Planet> planets;
 
 Ship ship;
 
-float dt = 0.05;
-float G = 5;
-float velocity_limit = 25;
+final float dt = 0.05;
+final float G = 5;
+final float velocity_limit = 25;
 
-int left_border = 5;
-int right_border = 5;
-int top_border = 5;
-int bottom_border = 200;
+final int left_border = 5;
+final int right_border = 5;
+final int top_border = 5;
+final int bottom_border = 200;
 
-int trajectory_lookahead = 2500;
+final int trajectory_lookahead = 2500;
 PVector[] trajectory = new PVector[trajectory_lookahead];
 int[] trajectory_sois = new int[trajectory_lookahead];
 
 boolean going_to_die;
 
-float ship_exclusion_radius = 100;
+final float ship_exclusion_radius = 100;
 
 boolean flying_paused;
 VoronoiCalculationStage _voronoiCalculationStage;
@@ -35,10 +35,10 @@ boolean pointOverSelfExplodeButton(float x, float y) {
   return x > width * 0.792 && x < width * 0.976 && y > height * 0.785 && y < height * 1.000;
 }
 
-int adjustment_count = 0; //how much steering adjustment has been made for the next move
-float cost_per_adjustment = 2; //how much fuel one adjustment costs
+int adjustment_count; //how much steering adjustment has been made for the next move
+final float cost_per_adjustment = 2; //how much fuel one adjustment costs
 
-int premove_amount = 0;
+int premove_amount;
 
 class Scene_InGame implements Scene {
   float screwAngleLB;
@@ -52,12 +52,15 @@ class Scene_InGame implements Scene {
     ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(0, 255, 255));
 
     _voronoiCalculationStage = VoronoiCalculationStage.FIRST_BACKGROUND;
-    flying_paused = false;
+    flying_paused = true;
 
     screwAngleLB = random(0, TWO_PI);
     screwAngleLT = random(0, TWO_PI);
     screwAngleRB = random(0, TWO_PI);
     screwAngleRT = random(0, TWO_PI);
+    
+    adjustment_count = 0;
+    premove_amount = 0;
   }
 
   void step() {
@@ -76,6 +79,7 @@ class Scene_InGame implements Scene {
       //no need for any drawing; the stuff from last frame is still on screen
       generate_all_planets_with_constraints();
       draw_voronoi_to_background();
+      actual_trajectory_calculation();
       sceneStartMillis = millis();
       _voronoiCalculationStage = VoronoiCalculationStage.IN_GAME;
       break;

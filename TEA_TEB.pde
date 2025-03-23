@@ -8,7 +8,7 @@ PFont fntOrbitronBlack;
 
 GameState gameState;
 
-color GREEN = color(32, 255, 64);
+final color GREEN = color(32, 255, 64);
 
 void setup() {
   //fullScreen();

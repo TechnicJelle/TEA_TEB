@@ -9,9 +9,9 @@ float velocity_limit = 25;
 //int soi_planet = 0;
 int last_soi_planet = 0;
 
-int left_border = 50;
-int right_border = 50;
-int top_border = 50;
+int left_border = 5;
+int right_border = 5;
+int top_border = 5;
 int bottom_border = 200;
 
 int trajectory_lookahead = 2500;
@@ -279,7 +279,11 @@ class Scene_InGame implements Scene {
         adjustment_count = 0;
         break;
       case 'v':
+        for (int removal = 0; removal < 25; removal += 1) {
+          if (planets.size() > 5) planets.remove(0);
+        }
         recalc_voronoi();
+        actual_trajectory_calculation();
         break;
       }
     }

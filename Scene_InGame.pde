@@ -39,14 +39,14 @@ boolean pointOverSelfExplodeButton(float x, float y) {
 }
 
 int adjustment_count; //how much steering adjustment has been made for the next move
-final float cost_per_adjustment = 2.2; //how much fuel one adjustment costs
-final float reward_per_lock_in = 1.1;
+final float cost_per_adjustment = 2.8; //how much fuel one adjustment costs
+final float reward_per_lock_in = 0.4;
 
 int lock_in_amount;
 
 MoveChoiceCard[] moveChoiceCards = new MoveChoiceCard[3];
 
-final int turnsToWaitForNewPlanetExplosion = 3;
+final int turnsToWaitForNewPlanetExplosion = 10;
 int currentlyAwaitedTurnsToWaitForNewPlanetExplosion;
 boolean canExplodePlanet() {
   return currentlyAwaitedTurnsToWaitForNewPlanetExplosion >= turnsToWaitForNewPlanetExplosion;
@@ -104,8 +104,7 @@ class Scene_InGame implements Scene {
       fill(GREEN);
 
       textSize(64);
-//      text("Calculating Trajectories...", width/2f, height/2f);
-      text("Travel through as much cells as you can.\nThe bigger the cell, the better!", width/2f, height/2f);
+      text("Calculating Trajectories...", width/2f, height/2f);
       _voronoiCalculationStage = VoronoiCalculationStage.CALCULATING;
       break;
     case CALCULATING:
@@ -344,7 +343,8 @@ class Scene_InGame implements Scene {
       textFont(fntOrbitronBold);
       textSize(32);
       fill(50);
-      text("Click on a planet to explode it.\nPress SPACE to continue the flight!", content_height, content_height*0.5);
+      if (canExplodePlanet()) text("Click on a planet to explode it.\nPress SPACE to continue the flight!", content_height, content_height*0.5);
+      else text("Press SPACE to continue the flight!", content_height, content_height*0.5);
       break;
     case LOCK_IN:
       float lockinWidth = content_height/3*2;
@@ -420,7 +420,12 @@ class Scene_InGame implements Scene {
       rectMode(CORNER);
       fill(255, 0, 0);
       ellipse(-content_height, content_height * 0.25, -content_height * 1.7, content_height * 0.50);
-    }
+
+      textSize(15);
+      fill(50);
+      text("Only use in case\nof optionlessness", -content_height*1.0, content_height*0.33, content_height * 0.5f);
+
+     }
     if (!buttonHovered) {
       stroke(150);
       strokeWeight(4);
@@ -474,6 +479,20 @@ class Scene_InGame implements Scene {
       text("Next move\nwill cost:", -batteryWidth*0.75, content_height*0.35);
       textSize(38);
       text(round(abs(adjustment_count * cost_per_adjustment)) + "%", -batteryWidth*0.75, content_height*0.65);
+    }
+
+    if (moveType == MoveType.LOCK_IN) {
+      pushMatrix();
+      translate(-content_height * 0.90 - content_x_padding, 0);
+      drawDeepRect(content_height, content_height);
+      popMatrix();
+      fill(0);
+      textFont(fntOrbitronRegular);
+      textAlign(RIGHT, CENTER);
+      textSize(24);
+      text("This lock-in\nwill give:", -batteryWidth*0.75, content_height*0.35);
+      textSize(38);
+      text(round(lock_in_amount * reward_per_lock_in) + "%", -batteryWidth*0.75, content_height*0.65);
     }
 
     popMatrix(); // <-- right panel content
@@ -590,6 +609,15 @@ class Scene_InGame implements Scene {
 
   void keyReleased() {
     switch(key) {
+    case '1':
+      if (flying_paused && moveType == MoveType.FLYING) moveType = MoveType.STEER;
+      break;
+    case '2':
+      if (flying_paused && moveType == MoveType.FLYING && canExplodePlanet()) moveType = MoveType.LOCK_IN;
+      break;
+    case '3':
+      if (flying_paused && moveType == MoveType.FLYING) moveType = MoveType.LOCK_IN;
+      break;
     case ' ':
     case ENTER:
     case RETURN:

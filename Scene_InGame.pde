@@ -57,6 +57,7 @@ class Scene_InGame implements Scene {
   float top = height - bottom_border + y_padding;
   float content_height = bottom - top - y_padding*2;
   float cardWidth = content_height/3f*2f;
+  float visualCenter = width*0.425;
 
   void init() {
     ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(200, 200, 200));
@@ -73,9 +74,9 @@ class Scene_InGame implements Scene {
     adjustment_count = 0;
     lock_in_amount = 0;
 
-    moveChoiceCards[0] = new SteerChoiceCard(width/2-cardWidth*2, top + y_padding, cardWidth, content_height);
-    moveChoiceCards[1] = new ExplodePlanetChoiceCard(width/2-cardWidth/2, top + y_padding, cardWidth, content_height);
-    moveChoiceCards[2] = new LockInChoiceCard(width/2+cardWidth, top + y_padding, cardWidth, content_height);
+    moveChoiceCards[0] = new SteerChoiceCard(visualCenter-cardWidth*2, top + y_padding, cardWidth, content_height);
+    moveChoiceCards[1] = new ExplodePlanetChoiceCard(visualCenter-cardWidth/2, top + y_padding, cardWidth, content_height);
+    moveChoiceCards[2] = new LockInChoiceCard(visualCenter+cardWidth, top + y_padding, cardWidth, content_height);
   }
 
   void step() {

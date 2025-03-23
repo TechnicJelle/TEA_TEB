@@ -5,6 +5,23 @@ class Scene_MainMenu implements Scene {
   void step() {
     background(0);
     textAlign(CENTER, CENTER);
+
+    PVector shipos = new PVector(width*1/5, height*1/2);
+    pushMatrix();
+    translate(shipos.x, shipos.y);
+    scale(1);
+    stroke(200, 10, 10);
+    strokeWeight(200);
+    beginShape(LINES);
+      //vertex(width*1/5, height*1/2);
+      vertex(0, 0);
+      vertex(width, width);
+    endShape();
+    popMatrix();
+    
+    Ship ship = new Ship(shipos, new PVector(-1, -1), 30);
+    ship.draw();
+    
     fill(GREEN);
 
     textFont(fntOrbitronBlack);

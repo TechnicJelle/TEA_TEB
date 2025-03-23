@@ -67,7 +67,7 @@ class Scene_InGame implements Scene {
   float visualCenter = width*0.425;
 
   void init() {
-    ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(200, 200, 200));
+    ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 2);
     last_score_pos = ship.pos;
     score = 0;
 

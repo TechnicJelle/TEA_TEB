@@ -3,32 +3,30 @@ class Ship {
   PVector vel;
   PVector acc;
 
-  float radius;
-  color col;
+  float scale;
   float fuel;
 
-  Ship(PVector p, PVector v, float r, color c) {
+  Ship(PVector p, PVector v, float s) {
     pos = p;
     vel = v;
     acc = new PVector(0, 0);
-    radius = r;
-    col = c;
+    scale = s;
     fuel = 100;
   }
   
   void draw() {
     pushMatrix();
-    translate(ship.pos.x, ship.pos.y);
-    rotate(ship.vel.heading() - HALF_PI);
-    scale(2);
+    translate(this.pos.x, this.pos.y);
+    rotate(this.vel.heading() - HALF_PI);
+    scale(this.scale);
     stroke(100, 100, 100);
     strokeWeight(1);
-    fill(ship.col);
+    fill(200, 200, 200);
 
     beginShape();
       vertex(-1, 14);
       vertex(1, 14);
-      vertex(3, 12);
+      vertex(3, 10);
       vertex(3, 4);
       vertex(5, 0);
       vertex(5, -6);
@@ -37,13 +35,13 @@ class Ship {
       vertex(-5, -6);
       vertex(-5, 0);
       vertex(-3, 4);
-      vertex(-3, 12);
+      vertex(-3, 10);
     endShape(CLOSE);
 
     beginShape(LINES);
-      vertex(-5, 2);
+      vertex(-5, 4);
       vertex(-5, -8);
-      vertex(5, 2);
+      vertex(5, 4);
       vertex(5, -8);
 
       vertex(-3, 0);
@@ -55,11 +53,11 @@ class Ship {
     stroke(150, 10, 10);
     strokeWeight(2);
     beginShape(LINES);
-      vertex(-3, 8);
-      vertex(3, 8);
+      vertex(-2, 9);
+      vertex(2, 9);
 
-      vertex(-3, 4);
-      vertex(3, 4);
+      vertex(-2, 5);
+      vertex(2, 5);
     endShape();
     stroke(100, 100, 100);
     strokeWeight(1);

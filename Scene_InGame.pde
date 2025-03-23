@@ -36,7 +36,7 @@ boolean pointOverSelfExplodeButton(float x, float y) {
 }
 
 int adjustment_count; //how much steering adjustment has been made for the next move
-final float cost_per_adjustment = 2; //how much fuel one adjustment costs
+final float cost_per_adjustment = 2.2; //how much fuel one adjustment costs
 
 int premove_amount;
 
@@ -368,7 +368,7 @@ class Scene_InGame implements Scene {
       switch(keyCode) {
       case LEFT:
         if (flying_paused == true) {
-          if (ship.fuel <= 0 || abs(adjustment_count)*cost_per_adjustment > ship.fuel) {
+          if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
             if (adjustment_count < 0) adjustment_count += 1;
             break;
           }
@@ -380,7 +380,7 @@ class Scene_InGame implements Scene {
 
       case RIGHT:
         if (flying_paused == true) {
-          if (ship.fuel <= 0 || abs(adjustment_count)*cost_per_adjustment > ship.fuel) {
+          if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
             if (adjustment_count > 0) adjustment_count -= 1;
             break;
           }

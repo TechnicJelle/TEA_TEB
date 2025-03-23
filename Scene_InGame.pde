@@ -40,6 +40,8 @@ final float cost_per_adjustment = 2.2; //how much fuel one adjustment costs
 
 int premove_amount;
 
+MoveChoiceCard[] moveChoiceCards = new MoveChoiceCard[3];
+
 class Scene_InGame implements Scene {
   float screwAngleLB;
   float screwAngleLT;
@@ -48,10 +50,19 @@ class Scene_InGame implements Scene {
 
   int sceneStartMillis;
 
+  float y_padding = 10;
+  float left = left_border/2;
+  float bottom = height - y_padding;
+  float right = width - right_border/2;
+  float top = height - bottom_border + y_padding;
+  float content_height = bottom - top - y_padding*2;
+  float cardWidth = content_height/3f*2f;
+
   void init() {
     ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(200, 200, 200));
 
     _voronoiCalculationStage = VoronoiCalculationStage.FIRST_BACKGROUND;
+    moveType = MoveType.FLYING;
     flying_paused = true;
 
     screwAngleLB = random(0, TWO_PI);
@@ -61,6 +72,10 @@ class Scene_InGame implements Scene {
 
     adjustment_count = 0;
     premove_amount = 0;
+
+    moveChoiceCards[0] = new SteerChoiceCard(width/2-cardWidth*2, top + y_padding, cardWidth, content_height);
+    moveChoiceCards[1] = new ExplodePlanetChoiceCard(width/2-cardWidth/2, top + y_padding, cardWidth, content_height);
+    moveChoiceCards[2] = new LockInChoiceCard(width/2+cardWidth, top + y_padding, cardWidth, content_height);
   }
 
   void step() {
@@ -161,11 +176,6 @@ class Scene_InGame implements Scene {
     fill(200);
     noStroke();
     rectMode(CORNERS);
-    float y_padding = 10;
-    float left = left_border/2;
-    float bottom = height - y_padding;
-    float right = width - right_border/2;
-    float top = height - bottom_border + y_padding;
     rect(left, bottom, right, top, 28);
     float screw_offset = 24;
     drawScrew(left + screw_offset, bottom - screw_offset, screwAngleLB);
@@ -176,7 +186,6 @@ class Scene_InGame implements Scene {
     //content
     pushMatrix(); // left panel content -->
     float content_x_padding = 48;
-    float content_height = bottom - top - y_padding*2;
     translate(left + content_x_padding, top + y_padding);
 
     //Indicator: Going To Die?
@@ -224,31 +233,33 @@ class Scene_InGame implements Scene {
     textAlign(CENTER, BOTTOM);
     text("Potential\nCollision\nImminent!", content_height/2, content_height - 3);
 
-    translate(content_height + content_x_padding, 0);
+    if (moveType == MoveType.STEER) {
+      translate(content_height + content_x_padding, 0);
 
-    pushMatrix(); //steering indicator -->
-    translate(content_height, content_height);
-    fill(180);
-    noStroke();
-    arc(0, 0, content_height*2.1, content_height*2.1, PI, TWO_PI);
-    fill(150);
-    float fuelLeft = map(ship.fuel, 100, 0, 0, HALF_PI);
-    arc(0, 0, content_height*2, content_height*2, PI + fuelLeft, TWO_PI - fuelLeft);
+      pushMatrix(); //steering indicator -->
+      translate(content_height, content_height);
+      fill(180);
+      noStroke();
+      arc(0, 0, content_height*2.1, content_height*2.1, PI, TWO_PI);
+      fill(150);
+      float fuelLeft = map(ship.fuel, 100, 0, 0, HALF_PI);
+      arc(0, 0, content_height*2, content_height*2, PI + fuelLeft, TWO_PI - fuelLeft);
 
-    textAlign(CENTER, CENTER);
-    textFont(fntOrbitronBold);
-    textSize(32);
-    fill(50);
-    text("Direction", 0, content_height * -0.75);
+      textAlign(CENTER, CENTER);
+      textFont(fntOrbitronBold);
+      textSize(32);
+      fill(50);
+      text("Direction", 0, content_height * -0.75);
 
-    rotate(map(adjustment_count, -100.0f/cost_per_adjustment, 100.0f/cost_per_adjustment, HALF_PI, -HALF_PI));
-    fill(RED);
-    triangle(
-      0, -content_height*0.9, //center
-      -10, 0, //bottom left
-      10, 0 //bottom right
-      );
-    popMatrix(); // <-- steering indicator
+      rotate(map(adjustment_count, -100.0f/cost_per_adjustment, 100.0f/cost_per_adjustment, HALF_PI, -HALF_PI));
+      fill(RED);
+      triangle(
+        0, -content_height*0.9, //center
+        -10, 0, //bottom left
+        10, 0 //bottom right
+        );
+      popMatrix(); // <-- steering indicator
+    }
 
     popMatrix(); // <-- left panel content
 
@@ -333,19 +344,28 @@ class Scene_InGame implements Scene {
 
     translate(-batteryWidth, 0);
 
-    pushMatrix();
-    translate(-content_height * 0.90 - content_x_padding, 0);
-    drawDeepRect(content_height, content_height);
-    popMatrix();
-    fill(0);
-    textFont(fntOrbitronRegular);
-    textAlign(RIGHT, CENTER);
-    textSize(24);
-    text("Next move\nwill cost:", -batteryWidth*0.75, content_height*0.35);
-    textSize(38);
-    text(round(abs(adjustment_count * cost_per_adjustment)) + "%", -batteryWidth*0.75, content_height*0.65);
+    if (moveType == MoveType.STEER) {
+      pushMatrix();
+      translate(-content_height * 0.90 - content_x_padding, 0);
+      drawDeepRect(content_height, content_height);
+      popMatrix();
+      fill(0);
+      textFont(fntOrbitronRegular);
+      textAlign(RIGHT, CENTER);
+      textSize(24);
+      text("Next move\nwill cost:", -batteryWidth*0.75, content_height*0.35);
+      textSize(38);
+      text(round(abs(adjustment_count * cost_per_adjustment)) + "%", -batteryWidth*0.75, content_height*0.65);
+    }
 
     popMatrix(); // <-- right panel content
+
+
+    if (moveType == MoveType.FLYING) {
+      for (MoveChoiceCard card : moveChoiceCards) {
+        card.step();
+      }
+    }
   }
 
   void drawDeepRect(float rWidth, float rHeight) {
@@ -386,6 +406,12 @@ class Scene_InGame implements Scene {
     if (pointOverSelfExplodeButton(mouseX, mouseY)) {
       gameState.nextScene();
     }
+
+    if (moveType == MoveType.FLYING) {
+      for (MoveChoiceCard card : moveChoiceCards) {
+        card.checkClick();
+      }
+    }
   }
 
   void keyPressed() {
@@ -421,6 +447,7 @@ class Scene_InGame implements Scene {
   void keyReleased() {
     switch(key) {
     case ' ':
+      moveType = MoveType.FLYING;
       flying_paused = false;
       ship.fuel -= abs(adjustment_count)*cost_per_adjustment;
       ship.fuel = max(ship.fuel, 0.0);

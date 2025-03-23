@@ -17,20 +17,20 @@ class Scene_MainMenu implements Scene {
   }
 
   void mousePressed() {
-    gameState.nextScene();
   }
 
   void mouseDragged() {
   }
 
   void mouseReleased() {
-  }
-
-  void keyPressed() {
     gameState.nextScene();
   }
 
+  void keyPressed() {
+  }
+
   void keyReleased() {
+    gameState.nextScene();
   }
 
   void cleanup() {

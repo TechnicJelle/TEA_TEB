@@ -391,32 +391,60 @@ class Scene_InGame implements Scene {
   void keyPressed() {
     PVector velocity_increment = new PVector(ship.vel.y, -ship.vel.x);
     velocity_increment.normalize().mult(0.001);
-    if (key == CODED) {
-      switch(keyCode) {
-      case LEFT:
-        if (flying_paused == true) {
-          if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
-            if (adjustment_count < 0) adjustment_count += 1;
-            break;
-          }
-          adjustment_count += 1;
-          ship.vel.add(velocity_increment);
-          actual_trajectory_calculation();
+    switch(keyCode) {
+    case LEFT:
+      if (flying_paused == true) {
+        if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
+          if (adjustment_count < 0) adjustment_count += 1;
+          break;
         }
-        break;
-
-      case RIGHT:
-        if (flying_paused == true) {
-          if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
-            if (adjustment_count > 0) adjustment_count -= 1;
-            break;
-          }
-          adjustment_count -= 1;
-          ship.vel.sub(velocity_increment);
-          actual_trajectory_calculation();
-        }
-        break;
+        adjustment_count += 1;
+        ship.vel.add(velocity_increment);
+        actual_trajectory_calculation();
       }
+      break;
+
+    case RIGHT:
+      if (flying_paused == true) {
+        if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
+          if (adjustment_count > 0) adjustment_count -= 1;
+          break;
+        }
+        adjustment_count -= 1;
+        ship.vel.sub(velocity_increment);
+        actual_trajectory_calculation();
+      }
+      break;
+    }
+  }
+
+  void keyReleased() {
+    if (key == CODED) {
+      //switch(keyCode) {
+      //case LEFT:
+      //  if (flying_paused == true) {
+      //    if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
+      //      if (adjustment_count < 0) adjustment_count += 1;
+      //      break;
+      //    }
+      //    adjustment_count += 1;
+      //    ship.vel.add(velocity_increment);
+      //    actual_trajectory_calculation();
+      //  }
+      //  break;
+
+      //case RIGHT:
+      //  if (flying_paused == true) {
+      //    if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
+      //      if (adjustment_count > 0) adjustment_count -= 1;
+      //      break;
+      //    }
+      //    adjustment_count -= 1;
+      //    ship.vel.sub(velocity_increment);
+      //    actual_trajectory_calculation();
+      //  }
+      //  break;
+      //}
     } else {
       switch(key) {
       case ' ':
@@ -438,9 +466,6 @@ class Scene_InGame implements Scene {
         break;
       }
     }
-  }
-
-  void keyReleased() {
   }
 
   void cleanup() {

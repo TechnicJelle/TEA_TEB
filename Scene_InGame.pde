@@ -76,6 +76,7 @@ class Scene_InGame implements Scene {
       //no need for any drawing; the stuff from last frame is still on screen
       generate_all_planets_with_constraints();
       draw_voronoi_to_background();
+      actual_trajectory_calculation();
       _voronoiCalculationStage = VoronoiCalculationStage.IN_GAME;
       break;
     case IN_GAME:

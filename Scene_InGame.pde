@@ -296,9 +296,13 @@ class Scene_InGame implements Scene {
     textAlign(CENTER, BOTTOM);
     text(round(ship.fuel) + "%", -batteryWidth/2, content_height+12);
 
+    noStroke();
+    fill(lerpColor(RED, GREEN, ship.fuel/100.0f));
+    rect(0, content_height - 20, -batteryWidth, (-content_height + 40) / 100.0f * ship.fuel);
+
     stroke(0);
     strokeWeight(3);
-    fill(lerpColor(RED, GREEN, ship.fuel/100.0f));
+    noFill();
     rect(0, 20, -batteryWidth, content_height - 40);
 
     popMatrix(); // <-- right panel content

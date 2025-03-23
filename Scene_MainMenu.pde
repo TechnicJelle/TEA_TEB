@@ -17,6 +17,7 @@ class Scene_MainMenu implements Scene {
   }
 
   void mousePressed() {
+    gameState.nextScene();
   }
 
   void mouseDragged() {

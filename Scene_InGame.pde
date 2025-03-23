@@ -16,7 +16,7 @@ PVector[] trajectory = new PVector[trajectory_lookahead];
 int[] trajectory_sois = new int[trajectory_lookahead];
 
 PVector last_score_pos;
-float score;
+int score;
 
 boolean going_to_die;
 
@@ -88,6 +88,8 @@ class Scene_InGame implements Scene {
     moveChoiceCards[0] = new SteerChoiceCard(visualCenter-cardWidth*2, top + y_padding, cardWidth, content_height);
     moveChoiceCards[1] = new ExplodePlanetChoiceCard(visualCenter-cardWidth/2, top + y_padding, cardWidth, content_height);
     moveChoiceCards[2] = new LockInChoiceCard(visualCenter+cardWidth, top + y_padding, cardWidth, content_height);
+
+    score = 0;
   }
 
   void step() {
@@ -598,6 +600,8 @@ class Scene_InGame implements Scene {
   void keyReleased() {
     switch(key) {
     case ' ':
+    case ENTER:
+    case RETURN:
       continueFlying();
       break;
     }

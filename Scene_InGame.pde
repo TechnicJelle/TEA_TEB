@@ -196,7 +196,7 @@ class Scene_InGame implements Scene {
 
         //popMatrix();
       }
-      if (flying_paused && moveType == MoveType.EXPLODE_PLANET) {
+      if (flying_paused && moveType == MoveType.EXPLODE_PLANET && amountOfExplodedPlanets < maxPlanetExplosions) {
         Planet p = planets.get(closest_soi(new PVector(mouseX, mouseY)));
         stroke(255, 0, 0);
         strokeWeight(p.radius);
@@ -533,12 +533,11 @@ class Scene_InGame implements Scene {
 
     if (flying_paused) {
       if (moveType == MoveType.EXPLODE_PLANET) {
-        amountOfExplodedPlanets++;
-        planets.remove(closest_soi(new PVector(mouseX, mouseY)));
-        recalc_voronoi();
-        actual_trajectory_calculation();
-        if (amountOfExplodedPlanets >= maxPlanetExplosions) {
-          continueFlying();
+        if (amountOfExplodedPlanets < maxPlanetExplosions) {
+          amountOfExplodedPlanets++;
+          planets.remove(closest_soi(new PVector(mouseX, mouseY)));
+          recalc_voronoi();
+          actual_trajectory_calculation();
         }
       } else if (moveType == MoveType.FLYING) {
         for (MoveChoiceCard card : moveChoiceCards) {
@@ -585,24 +584,20 @@ class Scene_InGame implements Scene {
     }
   }
 
-  void continueFlying() {
-    if (moveType != MoveType.FLYING) {
-      amountOfExplodedPlanets = 0;
-      moveType = MoveType.FLYING;
-      flying_paused = false;
-      ship.fuel -= abs(adjustment_count)*cost_per_adjustment;
-      ship.fuel = max(ship.fuel, 0.0);
-      ship.fuel = min(ship.fuel, 100.0);
-      adjustment_count = 0;
-    }
-  }
-
   void keyReleased() {
     switch(key) {
     case ' ':
     case ENTER:
     case RETURN:
-      continueFlying();
+      if (moveType != MoveType.FLYING) {
+        amountOfExplodedPlanets = 0;
+        moveType = MoveType.FLYING;
+        flying_paused = false;
+        ship.fuel -= abs(adjustment_count)*cost_per_adjustment;
+        ship.fuel = max(ship.fuel, 0.0);
+        ship.fuel = min(ship.fuel, 100.0);
+        adjustment_count = 0;
+      }
       break;
     }
   }

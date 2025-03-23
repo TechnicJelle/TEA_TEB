@@ -38,7 +38,7 @@ boolean pointOverSelfExplodeButton(float x, float y) {
 int adjustment_count; //how much steering adjustment has been made for the next move
 final float cost_per_adjustment = 2.2; //how much fuel one adjustment costs
 
-int premove_amount;
+int lock_in_amount;
 
 MoveChoiceCard[] moveChoiceCards = new MoveChoiceCard[3];
 
@@ -71,7 +71,7 @@ class Scene_InGame implements Scene {
     screwAngleRT = random(0, TWO_PI);
 
     adjustment_count = 0;
-    premove_amount = 0;
+    lock_in_amount = 0;
 
     moveChoiceCards[0] = new SteerChoiceCard(width/2-cardWidth*2, top + y_padding, cardWidth, content_height);
     moveChoiceCards[1] = new ExplodePlanetChoiceCard(width/2-cardWidth/2, top + y_padding, cardWidth, content_height);
@@ -104,8 +104,8 @@ class Scene_InGame implements Scene {
         for (int i = 0; i < 10; i++) {/* ship simulation step for-loop */
           int soi_planet = continuation_in_space(ship.pos, ship.vel, ship.acc);
           if (soi_planet != last_soi_planet) {
-            if (premove_amount <= 0) flying_paused = true;
-            else premove_amount -= 1;
+            if (lock_in_amount <= 0) flying_paused = true;
+            else lock_in_amount -= 1;
             last_soi_planet = soi_planet;
             break;
           }
@@ -119,11 +119,11 @@ class Scene_InGame implements Scene {
       noStroke();
       fill(200, 30, 190);
       int last_soi = trajectory_sois[0];
-      int local_premove_amount = premove_amount;
+      int local_lock_in_amount = lock_in_amount;
       for (int i = 0; i < trajectory_lookahead; i++) {
-        if (local_premove_amount < 0) {
+        if (local_lock_in_amount < 0) {
           fill(0, 255, 0);
-        } else if (trajectory_sois[i] != last_soi) local_premove_amount -= 1;
+        } else if (trajectory_sois[i] != last_soi) local_lock_in_amount -= 1;
         circle(trajectory[i].x, trajectory[i].y, 2);
         last_soi = trajectory_sois[i];
       }
@@ -265,9 +265,8 @@ class Scene_InGame implements Scene {
     textAlign(CENTER, BOTTOM);
     text("Potential\nCollision\nImminent!", content_height/2, content_height - 3);
 
+    translate(content_height + content_x_padding, 0);
     if (moveType == MoveType.STEER) {
-      translate(content_height + content_x_padding, 0);
-
       pushMatrix(); //steering indicator -->
       translate(content_height, content_height);
       fill(180);
@@ -291,6 +290,36 @@ class Scene_InGame implements Scene {
         10, 0 //bottom right
         );
       popMatrix(); // <-- steering indicator
+    } else if (moveType == MoveType.LOCK_IN) {
+      float lockinWidth = content_height/3*2;
+      pushMatrix(); //lock-in steps amount -->
+      stroke(120);
+      strokeWeight(5);
+      fill(180);
+      rect(0, 0, lockinWidth, content_height);
+
+      textAlign(CENTER, CENTER);
+      textFont(fntOrbitronBold);
+      textSize(64);
+      fill(50);
+      text(lock_in_amount, lockinWidth/2, content_height * 0.5);
+
+      stroke(50);
+      strokeWeight(10);
+      //top
+      line(lockinWidth/2-35, 40, lockinWidth/2, 10);
+      line(lockinWidth/2+35, 40, lockinWidth/2, 10);
+      //bottom
+      line(lockinWidth/2-35, content_height-40, lockinWidth/2, content_height-10);
+      line(lockinWidth/2+35, content_height-40, lockinWidth/2, content_height-10);
+
+      textAlign(LEFT, CENTER);
+      textFont(fntOrbitronBold);
+      textSize(32);
+      fill(50);
+      text("Scroll to increase the Lock-In Steps\nPress SPACE to continue the flight!", lockinWidth + content_x_padding, content_height * 0.5);
+
+      popMatrix(); // <-- lock-in steps amount
     }
 
     popMatrix(); // <-- left panel content
@@ -446,6 +475,13 @@ class Scene_InGame implements Scene {
     }
   }
 
+  void mouseWheel(MouseEvent event) {
+    if (moveType == MoveType.LOCK_IN) {
+      float e = event.getCount();
+      lock_in_amount = constrain(lock_in_amount - round(e), 1, 20);
+    }
+  }
+
   void keyPressed() {
     PVector velocity_increment = new PVector(ship.vel.y, -ship.vel.x);
     velocity_increment.normalize().mult(0.001);
@@ -494,9 +530,6 @@ class Scene_InGame implements Scene {
       }
       recalc_voronoi();
       actual_trajectory_calculation();
-      break;
-    case 'p':
-      premove_amount = 10;
       break;
     }
   }

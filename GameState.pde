@@ -6,6 +6,7 @@ interface Scene {
   void mousePressed();
   void mouseDragged();
   void mouseReleased();
+  void mouseWheel(MouseEvent event);
   void keyPressed();
   void keyReleased();
   void cleanup();
@@ -53,6 +54,10 @@ class GameState {
 
   void mouseReleasedCurrentScene() {
     getCurrentScene().mouseReleased();
+  }
+
+  void mouseWheelCurrentScene(MouseEvent event) {
+    getCurrentScene().mouseWheel(event);
   }
 
   void keyPressedCurrentScene() {

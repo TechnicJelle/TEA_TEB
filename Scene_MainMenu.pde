@@ -26,6 +26,9 @@ class Scene_MainMenu implements Scene {
     gameState.nextScene();
   }
 
+  void mouseWheel(MouseEvent event) {
+  }
+
   void keyPressed() {
   }
 

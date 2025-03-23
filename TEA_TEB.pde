@@ -44,6 +44,10 @@ void mouseReleased() {
   gameState.mouseReleasedCurrentScene();
 }
 
+void mouseWheel(MouseEvent event) {
+  gameState.mouseWheelCurrentScene(event);
+}
+
 void keyPressed() {
   gameState.keyPressedCurrentScene();
 }

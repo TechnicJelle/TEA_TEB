@@ -600,13 +600,6 @@ class Scene_InGame implements Scene {
     case ' ':
       continueFlying();
       break;
-    case 'v':
-      for (int removal = 0; removal < 25; removal += 1) {
-        if (planets.size() > 5) planets.remove(0);
-      }
-      recalc_voronoi();
-      actual_trajectory_calculation();
-      break;
     }
   }
 

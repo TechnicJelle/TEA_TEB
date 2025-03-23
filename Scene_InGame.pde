@@ -125,7 +125,7 @@ class Scene_InGame implements Scene {
               ship.fuel = max(ship.fuel, 0.0);
               ship.fuel = min(ship.fuel, 100.0);
             }
-            score += sq(PVector.dist(ship.pos, last_score_pos));
+            score += sq(PVector.dist(ship.pos, last_score_pos)) / 1000;
             last_score_pos = ship.pos.copy();
             last_soi_planet = soi_planet;
             break;

@@ -40,6 +40,7 @@ boolean pointOverSelfExplodeButton(float x, float y) {
 
 int adjustment_count; //how much steering adjustment has been made for the next move
 final float cost_per_adjustment = 2.2; //how much fuel one adjustment costs
+final float reward_per_lock_in = 1.1;
 
 int lock_in_amount;
 
@@ -68,6 +69,7 @@ class Scene_InGame implements Scene {
   void init() {
     ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(200, 200, 200));
     last_score_pos = ship.pos;
+    score = 0;
 
     _voronoiCalculationStage = VoronoiCalculationStage.FIRST_BACKGROUND;
     moveType = MoveType.FLYING;
@@ -115,7 +117,12 @@ class Scene_InGame implements Scene {
           int soi_planet = continuation_in_space(ship.pos, ship.vel, ship.acc);
           if (soi_planet != last_soi_planet) {
             if (lock_in_amount <= 0) flying_paused = true;
-            else lock_in_amount -= 1;
+            else {
+              lock_in_amount -= 1;
+              ship.fuel += reward_per_lock_in;
+              ship.fuel = max(ship.fuel, 0.0);
+              ship.fuel = min(ship.fuel, 100.0);
+            }
             score += sq(PVector.dist(ship.pos, last_score_pos));
             last_score_pos = ship.pos.copy();
             last_soi_planet = soi_planet;
@@ -145,11 +152,7 @@ class Scene_InGame implements Scene {
       //draw all planets
       for (Planet p : planets) {
         //noStroke();
-        if (flying_paused && moveType == MoveType.EXPLODE_PLANET && new PVector(mouseX, mouseY).dist(p.pos) < p.radius) {
-          stroke(255, 0, 0);
-        } else {
-          stroke(p.col);
-        }
+        stroke(p.col);
         strokeWeight(p.radius);
         point(p.pos.x, p.pos.y);
         //pushMatrix();
@@ -191,7 +194,14 @@ class Scene_InGame implements Scene {
 
         //popMatrix();
       }
-      println(score/width);
+      if (flying_paused && moveType == MoveType.EXPLODE_PLANET) {
+        Planet p = planets.get(closest_soi(new PVector(mouseX, mouseY)));
+        stroke(255, 0, 0);
+        strokeWeight(p.radius);
+        point(p.pos.x, p.pos.y);
+      }
+
+      //println(score/width);
 
       //color the current soi planet, mainly for debug atm
       //  fill(0, 255, 0);
@@ -520,22 +530,17 @@ class Scene_InGame implements Scene {
     }
 
     if (flying_paused) {
-      if (moveType == MoveType.FLYING) {
+      if (moveType == MoveType.EXPLODE_PLANET) {
+        amountOfExplodedPlanets++;
+        planets.remove(closest_soi(new PVector(mouseX, mouseY)));
+        recalc_voronoi();
+        actual_trajectory_calculation();
+        if (amountOfExplodedPlanets >= maxPlanetExplosions) {
+          continueFlying();
+        }
+      } else if (moveType == MoveType.FLYING) {
         for (MoveChoiceCard card : moveChoiceCards) {
           card.checkClick();
-        }
-      }
-      if (moveType == MoveType.EXPLODE_PLANET) {
-        for (int i = planets.size() - 1; i >= 0; i--) {
-          Planet p = planets.get(i);
-          if (new PVector(mouseX, mouseY).dist(p.pos) < p.radius) {
-            println("TODO: actually delete this clicked planet");
-            amountOfExplodedPlanets++;
-            if (amountOfExplodedPlanets >= maxPlanetExplosions) {
-              continueFlying();
-              break;
-            }
-          }
         }
       }
     }

@@ -18,10 +18,10 @@ class Scene_MainMenu implements Scene {
       vertex(width, width);
     endShape();
     popMatrix();
-    
+
     Ship ship = new Ship(shipos, new PVector(-1, -1), 30);
     ship.draw();
-    
+
     fill(GREEN);
 
     textFont(fntOrbitronBlack);
@@ -35,9 +35,13 @@ class Scene_MainMenu implements Scene {
     textFont(fntOrbitronRegular);
     textSize(32);
     text("Press space or click to start...", width/2f, height*0.9);
-    
+
     text("Traverse large stretches of space.\nThe bigger the passage, the better.", width*2/3f, height*1/2f);
 
+
+    textAlign(RIGHT, BOTTOM);
+    textSize(20);
+    text("Made with Processing", width-10, height-20);
   }
 
   void mousePressed() {

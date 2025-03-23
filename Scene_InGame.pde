@@ -15,6 +15,9 @@ final int trajectory_lookahead = 2500;
 PVector[] trajectory = new PVector[trajectory_lookahead];
 int[] trajectory_sois = new int[trajectory_lookahead];
 
+PVector last_score_pos;
+float score;
+
 boolean going_to_die;
 
 final float ship_exclusion_radius = 100;
@@ -61,6 +64,7 @@ class Scene_InGame implements Scene {
 
   void init() {
     ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(200, 200, 200));
+    last_score_pos = ship.pos;
 
     _voronoiCalculationStage = VoronoiCalculationStage.FIRST_BACKGROUND;
     moveType = MoveType.FLYING;
@@ -107,6 +111,8 @@ class Scene_InGame implements Scene {
           if (soi_planet != last_soi_planet) {
             if (lock_in_amount <= 0) flying_paused = true;
             else lock_in_amount -= 1;
+            score += sq(PVector.dist(ship.pos, last_score_pos));
+            last_score_pos = ship.pos.copy();
             last_soi_planet = soi_planet;
             break;
           }
@@ -176,6 +182,7 @@ class Scene_InGame implements Scene {
 
         //popMatrix();
       }
+      println(score/width);
 
       //color the current soi planet, mainly for debug atm
       //  fill(0, 255, 0);

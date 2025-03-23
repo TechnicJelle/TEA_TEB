@@ -280,6 +280,27 @@ class Scene_InGame implements Scene {
       line(content_height * -0.05, -content_height * -0.60, content_height * -0.05, -content_height * -0.87); //right
     }
 
+
+    //Indicator: Fuel
+    translate(-content_height*2 - content_x_padding, 0);
+    float batteryWidth = content_height/3;
+
+    fill(0);
+    textFont(fntOrbitronBold);
+    textSize(24);
+    textAlign(CENTER, TOP);
+    text("FUEL:", -batteryWidth/2, -7);
+
+    textFont(fntOrbitronRegular);
+    textSize(24);
+    textAlign(CENTER, BOTTOM);
+    text(round(ship.fuel) + "%", -batteryWidth/2, content_height+12);
+
+    stroke(0);
+    strokeWeight(3);
+    fill(lerpColor(RED, GREEN, ship.fuel/100.0f));
+    rect(0, 20, -batteryWidth, content_height - 40);
+
     popMatrix(); // <-- right panel content
   }
 

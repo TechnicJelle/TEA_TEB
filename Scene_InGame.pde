@@ -152,10 +152,10 @@ class Scene_InGame implements Scene {
 
         //  vertex(-0.8, -0.25);
         //  vertex(0.8, 0.25);
-          
+
         //  vertex(-0.8, 0.25);
         //  vertex(0.8, -0.25);
-          
+
         //  vertex(-0.2, -0.2);
         //  vertex(0.2, 0.2);
         //  vertex(-0.2, 0.2);
@@ -169,7 +169,7 @@ class Scene_InGame implements Scene {
 
         //  vertex(-0.7, -0.15);
         //  vertex(0.7, 0.15);
-          
+
         //  vertex(-0.7, 0.15);
         //  vertex(0.7, -0.15);
         //endShape();
@@ -485,7 +485,7 @@ class Scene_InGame implements Scene {
       gameState.nextScene();
     }
 
-    if (moveType == MoveType.FLYING) {
+    if (flying_paused && moveType == MoveType.FLYING) {
       for (MoveChoiceCard card : moveChoiceCards) {
         card.checkClick();
       }
@@ -493,7 +493,7 @@ class Scene_InGame implements Scene {
   }
 
   void mouseWheel(MouseEvent event) {
-    if (moveType == MoveType.LOCK_IN) {
+    if (flying_paused && moveType == MoveType.LOCK_IN) {
       float e = event.getCount();
       lock_in_amount = constrain(lock_in_amount - round(e), 0, 10);
     }
@@ -504,7 +504,7 @@ class Scene_InGame implements Scene {
     velocity_increment.normalize().mult(0.001);
     switch(keyCode) {
     case LEFT:
-      if (flying_paused == true && moveType == MoveType.STEER) {
+      if (flying_paused && moveType == MoveType.STEER) {
         if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
           if (adjustment_count < 0) adjustment_count += 1;
           break;
@@ -516,7 +516,7 @@ class Scene_InGame implements Scene {
       break;
 
     case RIGHT:
-      if (flying_paused == true && moveType == MoveType.STEER) {
+      if (flying_paused && moveType == MoveType.STEER) {
         if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
           if (adjustment_count > 0) adjustment_count -= 1;
           break;

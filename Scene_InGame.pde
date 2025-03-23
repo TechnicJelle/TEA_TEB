@@ -46,6 +46,8 @@ class Scene_InGame implements Scene {
   float screwAngleRB;
   float screwAngleRT;
 
+  int sceneStartMillis;
+
   void init() {
     ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(0, 255, 255));
 
@@ -74,6 +76,7 @@ class Scene_InGame implements Scene {
       //no need for any drawing; the stuff from last frame is still on screen
       generate_all_planets_with_constraints();
       draw_voronoi_to_background();
+      sceneStartMillis = millis();
       _voronoiCalculationStage = VoronoiCalculationStage.IN_GAME;
       break;
     case IN_GAME:
@@ -309,6 +312,8 @@ class Scene_InGame implements Scene {
   }
 
   void mouseReleased() {
+    if (_voronoiCalculationStage != VoronoiCalculationStage.IN_GAME) return;
+    if (millis() - sceneStartMillis < 100) return;
     if (pointOverSelfExplodeButton(mouseX, mouseY)) {
       gameState.nextScene();
     }
@@ -359,9 +364,9 @@ class Scene_InGame implements Scene {
         recalc_voronoi();
         actual_trajectory_calculation();
         break;
-       case 'p':
-         premove_amount = 10;
-         break;
+      case 'p':
+        premove_amount = 10;
+        break;
       }
     }
     println(ship.fuel, adjustment_count);

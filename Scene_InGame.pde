@@ -291,6 +291,12 @@ class Scene_InGame implements Scene {
         10, 0 //bottom right
         );
       popMatrix(); // <-- steering indicator
+
+      textAlign(LEFT, CENTER);
+      textFont(fntOrbitronBold);
+      textSize(24);
+      fill(50);
+      text("Arrow Keys to adjust course.\nPress SPACE to continue the flight!", content_x_padding + content_height*2, content_height*0.5);
     } else if (moveType == MoveType.LOCK_IN) {
       float lockinWidth = content_height/3*2;
       pushMatrix(); //lock-in steps amount -->
@@ -318,7 +324,7 @@ class Scene_InGame implements Scene {
       textFont(fntOrbitronBold);
       textSize(32);
       fill(50);
-      text("Scroll to increase the Lock-In Steps\nPress SPACE to continue the flight!", lockinWidth + content_x_padding, content_height * 0.5);
+      text("Scroll to increase the Lock-In Steps.\nPress SPACE to continue the flight!", lockinWidth + content_x_padding, content_height * 0.5);
 
       popMatrix(); // <-- lock-in steps amount
     }
@@ -422,10 +428,20 @@ class Scene_InGame implements Scene {
 
     popMatrix(); // <-- right panel content
 
-
-    if (moveType == MoveType.FLYING) {
-      for (MoveChoiceCard card : moveChoiceCards) {
-        card.step();
+    if (flying_paused) {
+      if (moveType == MoveType.FLYING) {
+        for (MoveChoiceCard card : moveChoiceCards) {
+          card.step();
+        }
+      }
+    } else {
+      textAlign(CENTER, CENTER);
+      textFont(fntOrbitronBold);
+      textSize(32);
+      fill(50);
+      text("Ship is in flight...\nPlease hold on...", visualCenter, top + y_padding + content_height*0.5);
+      if (lock_in_amount != 0) {
+        text("Steps left: " + lock_in_amount, visualCenter + content_height*2.2, top + y_padding + content_height*0.5);
       }
     }
   }

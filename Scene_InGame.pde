@@ -233,6 +233,12 @@ class Scene_InGame implements Scene {
   }
 
   void drawUI() {
+    textFont(fntOrbitronBold);
+    textSize(24);
+    textAlign(LEFT, TOP);
+    fill(255, 150);
+    text("Score: " + nfc(score), 10, 10);
+
     //panel
     fill(200);
     noStroke();

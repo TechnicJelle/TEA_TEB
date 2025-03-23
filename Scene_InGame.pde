@@ -6,9 +6,6 @@ float dt = 0.05;
 float G = 5;
 float velocity_limit = 25;
 
-//int soi_planet = 0;
-int last_soi_planet = 0;
-
 int left_border = 5;
 int right_border = 5;
 int top_border = 5;
@@ -81,7 +78,7 @@ class Scene_InGame implements Scene {
       break;
     case IN_GAME:
       if (!flying_paused) { /* flying paused if-statement */
-        //int soi_planet = last_soi_planet;
+        int last_soi_planet = closest_soi(ship.pos);
         for (int i = 0; i < 10; i++) {/* ship simulation step for-loop */
           int soi_planet = continuation_in_space(ship.pos, ship.vel, ship.acc);
           if (soi_planet != last_soi_planet) {

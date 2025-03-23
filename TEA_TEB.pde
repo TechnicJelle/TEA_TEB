@@ -18,8 +18,8 @@ final color RED = color(200, 10, 10);
 Table highscores;
 
 void setup() {
-  fullScreen();
-  //size(1800, 900);
+  //fullScreen();
+  size(1800, 900);
 
   fntOrbitronRegular = createFont("fonts/Orbitron/Orbitron-Regular.ttf", 128);
   fntOrbitronBold = createFont("fonts/Orbitron/Orbitron-Bold.ttf", 128);

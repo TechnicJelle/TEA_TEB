@@ -104,7 +104,8 @@ class Scene_InGame implements Scene {
       fill(GREEN);
 
       textSize(64);
-      text("Calculating Trajectories...", width/2f, height/2f);
+//      text("Calculating Trajectories...", width/2f, height/2f);
+      text("Travel through as much cells as you can.\nThe bigger the cell, the better!", width/2f, height/2f);
       _voronoiCalculationStage = VoronoiCalculationStage.CALCULATING;
       break;
     case CALCULATING:

@@ -34,13 +34,19 @@ enum MoveType {
 }
 
 class SteerChoiceCard extends MoveChoiceCard {
+  PImage tex;
+
   SteerChoiceCard(float x, float y, float w, float h) {
     super(x, y, w, h);
+    tex = loadImage("data/tex/split_road.png");
   }
 
   void step() {
     fill(255);
     super.step();
+    imageMode(CENTER);
+    image(tex, x+w/2, y+h/2);
+    imageMode(CORNER);
   }
 
   void checkClick() {
@@ -50,13 +56,19 @@ class SteerChoiceCard extends MoveChoiceCard {
 }
 
 class ExplodePlanetChoiceCard extends MoveChoiceCard {
+  PImage tex;
+
   ExplodePlanetChoiceCard(float x, float y, float w, float h) {
     super(x, y, w, h);
+    tex = loadImage("data/tex/fragmentation.png");
   }
 
   void step() {
     fill(255, 0, 0);
     super.step();
+    imageMode(CENTER);
+    image(tex, x+w/2, y+h/2);
+    imageMode(CORNER);
   }
 
   void checkClick() {
@@ -66,13 +78,19 @@ class ExplodePlanetChoiceCard extends MoveChoiceCard {
 }
 
 class LockInChoiceCard extends MoveChoiceCard {
+  PImage tex;
+
   LockInChoiceCard(float x, float y, float w, float h) {
     super(x, y, w, h);
+    tex = loadImage("data/tex/nyoom.png");
   }
 
   void step() {
     fill(0, 255, 255);
     super.step();
+    imageMode(CENTER);
+    image(tex, x+w/2, y+h/2);
+    imageMode(CORNER);
   }
 
   void checkClick() {

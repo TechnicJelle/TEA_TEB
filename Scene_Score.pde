@@ -111,7 +111,7 @@ class Scene_Score implements Scene {
       }
     } else {
       textSize(48);
-      text("Press space or click to go the menu", width/4, height*0.9);
+      text("Press space or click\nto go back to the menu", width/4, height*0.85);
     }
 
     // --- Highscores list ---

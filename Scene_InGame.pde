@@ -46,8 +46,11 @@ int lock_in_amount;
 
 MoveChoiceCard[] moveChoiceCards = new MoveChoiceCard[3];
 
-final int maxPlanetExplosions = 5;
-int amountOfExplodedPlanets;
+final int turnsToWaitForNewPlanetExplosion = 3;
+int currentlyAwaitedTurnsToWaitForNewPlanetExplosion;
+boolean canExplodePlanet() {
+  return currentlyAwaitedTurnsToWaitForNewPlanetExplosion >= turnsToWaitForNewPlanetExplosion;
+}
 
 class Scene_InGame implements Scene {
   float screwAngleLB;
@@ -83,7 +86,7 @@ class Scene_InGame implements Scene {
     adjustment_count = 0;
     lock_in_amount = 0;
 
-    amountOfExplodedPlanets= 0;
+    currentlyAwaitedTurnsToWaitForNewPlanetExplosion = turnsToWaitForNewPlanetExplosion;
 
     moveChoiceCards[0] = new SteerChoiceCard(visualCenter-cardWidth*2, top + y_padding, cardWidth, content_height);
     moveChoiceCards[1] = new ExplodePlanetChoiceCard(visualCenter-cardWidth/2, top + y_padding, cardWidth, content_height);
@@ -196,7 +199,7 @@ class Scene_InGame implements Scene {
 
         //popMatrix();
       }
-      if (flying_paused && moveType == MoveType.EXPLODE_PLANET && amountOfExplodedPlanets < maxPlanetExplosions) {
+      if (flying_paused && moveType == MoveType.EXPLODE_PLANET && canExplodePlanet()) {
         Planet p = planets.get(closest_soi(new PVector(mouseX, mouseY)));
         stroke(255, 0, 0);
         strokeWeight(p.radius);
@@ -336,17 +339,11 @@ class Scene_InGame implements Scene {
       text("Arrow Keys to adjust course.\nPress SPACE to continue the flight!", content_x_padding + content_height*2, content_height*0.5);
       break;
     case EXPLODE_PLANET:
-      textAlign(CENTER, CENTER);
-      textFont(fntOrbitronBold);
-      textSize(32);
-      fill(50);
-      text("Exploded planets:\n" + amountOfExplodedPlanets + "/" + maxPlanetExplosions, content_height, content_height*0.5);
-
       textAlign(LEFT, CENTER);
       textFont(fntOrbitronBold);
       textSize(32);
       fill(50);
-      text("Click on a planet to explode it.\nPress SPACE to continue the flight!", content_x_padding + content_height*2, content_height*0.5);
+      text("Click on a planet to explode it.\nPress SPACE to continue the flight!", content_height, content_height*0.5);
       break;
     case LOCK_IN:
       float lockinWidth = content_height/3*2;
@@ -539,8 +536,8 @@ class Scene_InGame implements Scene {
 
     if (flying_paused) {
       if (moveType == MoveType.EXPLODE_PLANET) {
-        if (amountOfExplodedPlanets < maxPlanetExplosions) {
-          amountOfExplodedPlanets++;
+        if (canExplodePlanet()) {
+          currentlyAwaitedTurnsToWaitForNewPlanetExplosion = 0;
           planets.remove(closest_soi(new PVector(mouseX, mouseY)));
           recalc_voronoi();
           actual_trajectory_calculation();
@@ -596,7 +593,7 @@ class Scene_InGame implements Scene {
     case ENTER:
     case RETURN:
       if (moveType != MoveType.FLYING) {
-        amountOfExplodedPlanets = 0;
+        currentlyAwaitedTurnsToWaitForNewPlanetExplosion++;
         moveType = MoveType.FLYING;
         flying_paused = false;
         ship.fuel -= abs(adjustment_count)*cost_per_adjustment;

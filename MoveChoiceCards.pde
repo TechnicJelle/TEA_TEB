@@ -64,15 +64,23 @@ class ExplodePlanetChoiceCard extends MoveChoiceCard {
   }
 
   void step() {
-    fill(255, 0, 0);
-    super.step();
+    if (canExplodePlanet()) {
+      fill(255, 0, 0);
+      super.step();
+    } else {
+      fill(50);
+      rect(x, y, w, h, 5);
+      tint(100);
+    }
     imageMode(CENTER);
     image(tex, x+w/2, y+h/2);
+    noTint();
     imageMode(CORNER);
   }
 
   void checkClick() {
     if (!hovering) return;
+    if (!canExplodePlanet()) return;
     moveType = MoveType.EXPLODE_PLANET;
   }
 }

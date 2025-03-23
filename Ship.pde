@@ -15,6 +15,64 @@ class Ship {
     col = c;
     fuel = 100;
   }
+  
+  void draw() {
+    pushMatrix();
+    translate(ship.pos.x, ship.pos.y);
+    rotate(ship.vel.heading() - HALF_PI);
+    scale(2);
+    stroke(100, 100, 100);
+    strokeWeight(1);
+    fill(ship.col);
+
+    beginShape();
+      vertex(-1, 14);
+      vertex(1, 14);
+      vertex(3, 12);
+      vertex(3, 4);
+      vertex(5, 0);
+      vertex(5, -6);
+      vertex(1, -8);
+      vertex(-1, -8);
+      vertex(-5, -6);
+      vertex(-5, 0);
+      vertex(-3, 4);
+      vertex(-3, 12);
+    endShape(CLOSE);
+
+    beginShape(LINES);
+      vertex(-5, 2);
+      vertex(-5, -8);
+      vertex(5, 2);
+      vertex(5, -8);
+
+      vertex(-3, 0);
+      vertex(-3, -5);
+      vertex(3, 0);
+      vertex(3, -5);
+    endShape();
+
+    stroke(150, 10, 10);
+    strokeWeight(2);
+    beginShape(LINES);
+      vertex(-3, 8);
+      vertex(3, 8);
+
+      vertex(-3, 4);
+      vertex(3, 4);
+    endShape();
+    stroke(100, 100, 100);
+    strokeWeight(1);
+    beginShape(LINES);
+      vertex(-3, 12);
+      vertex(-3, 4);
+
+      vertex(3, 12);
+      vertex(3, 4);
+    endShape();
+
+    popMatrix();
+  }
 }
 
 int continuation_in_space(PVector pos, PVector vel, PVector acc) {

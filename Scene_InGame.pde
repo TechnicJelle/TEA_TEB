@@ -49,7 +49,7 @@ class Scene_InGame implements Scene {
   int sceneStartMillis;
 
   void init() {
-    ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(0, 255, 255));
+    ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(200, 200, 200));
 
     _voronoiCalculationStage = VoronoiCalculationStage.FIRST_BACKGROUND;
     flying_paused = true;
@@ -119,7 +119,8 @@ class Scene_InGame implements Scene {
       } else {
         fill(ship.col);
       }
-      circle(ship.pos.x, ship.pos.y, ship.radius);
+      ship.draw();
+      //circle(ship.pos.x, ship.pos.y, ship.radius);
 
       //draw all planets
       for (Planet p : planets) {

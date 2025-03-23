@@ -419,7 +419,7 @@ class Scene_InGame implements Scene {
     velocity_increment.normalize().mult(0.001);
     switch(keyCode) {
     case LEFT:
-      if (flying_paused == true) {
+      if (flying_paused == true && moveType == MoveType.STEER) {
         if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
           if (adjustment_count < 0) adjustment_count += 1;
           break;
@@ -431,7 +431,7 @@ class Scene_InGame implements Scene {
       break;
 
     case RIGHT:
-      if (flying_paused == true) {
+      if (flying_paused == true && moveType == MoveType.STEER) {
         if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
           if (adjustment_count > 0) adjustment_count -= 1;
           break;
@@ -447,12 +447,14 @@ class Scene_InGame implements Scene {
   void keyReleased() {
     switch(key) {
     case ' ':
-      moveType = MoveType.FLYING;
-      flying_paused = false;
-      ship.fuel -= abs(adjustment_count)*cost_per_adjustment;
-      ship.fuel = max(ship.fuel, 0.0);
-      ship.fuel = min(ship.fuel, 100.0);
-      adjustment_count = 0;
+      if (moveType != MoveType.FLYING) {
+        moveType = MoveType.FLYING;
+        flying_paused = false;
+        ship.fuel -= abs(adjustment_count)*cost_per_adjustment;
+        ship.fuel = max(ship.fuel, 0.0);
+        ship.fuel = min(ship.fuel, 100.0);
+        adjustment_count = 0;
+      }
       break;
     case 'v':
       for (int removal = 0; removal < 25; removal += 1) {

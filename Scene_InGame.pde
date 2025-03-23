@@ -223,6 +223,32 @@ class Scene_InGame implements Scene {
     textAlign(CENTER, BOTTOM);
     text("Potential\nCollision\nImminent!", content_height/2, content_height - 3);
 
+    translate(content_height + content_x_padding, 0);
+
+    pushMatrix(); //steering indicator -->
+    translate(content_height, content_height);
+    fill(180);
+    noStroke();
+    arc(0, 0, content_height*2.1, content_height*2.1, PI, TWO_PI);
+    fill(150);
+    float fuelLeft = map(ship.fuel, 100, 0, 0, HALF_PI);
+    arc(0, 0, content_height*2, content_height*2, PI + fuelLeft, TWO_PI - fuelLeft);
+
+    textAlign(CENTER, CENTER);
+    textFont(fntOrbitronBold);
+    textSize(32);
+    fill(50);
+    text("Direction", 0, content_height * -0.75);
+
+    rotate(map(adjustment_count, -100.0f/cost_per_adjustment, 100.0f/cost_per_adjustment, HALF_PI, -HALF_PI));
+    fill(RED);
+    triangle(
+      0, -content_height*0.9, //center
+      -10, 0, //bottom left
+      10, 0 //bottom right
+      );
+    popMatrix(); // <-- steering indicator
+
     popMatrix(); // <-- left panel content
 
     //-----------------------------------

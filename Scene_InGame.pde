@@ -58,7 +58,7 @@ class Scene_InGame implements Scene {
     screwAngleLT = random(0, TWO_PI);
     screwAngleRB = random(0, TWO_PI);
     screwAngleRT = random(0, TWO_PI);
-    
+
     adjustment_count = 0;
     premove_amount = 0;
   }
@@ -280,7 +280,6 @@ class Scene_InGame implements Scene {
       line(content_height * -0.05, -content_height * -0.60, content_height * -0.05, -content_height * -0.87); //right
     }
 
-
     //Indicator: Fuel
     translate(-content_height*2 - content_x_padding, 0);
     float batteryWidth = content_height/3;
@@ -304,6 +303,20 @@ class Scene_InGame implements Scene {
     strokeWeight(3);
     noFill();
     rect(0, 20, -batteryWidth, content_height - 40);
+
+    translate(-batteryWidth, 0);
+
+    pushMatrix();
+    translate(-content_height * 0.90 - content_x_padding, 0);
+    drawDeepRect(content_height, content_height);
+    popMatrix();
+    fill(0);
+    textFont(fntOrbitronRegular);
+    textAlign(RIGHT, CENTER);
+    textSize(24);
+    text("Next move\nwill cost:", -batteryWidth*0.75, content_height*0.35);
+    textSize(38);
+    text(round(abs(adjustment_count * cost_per_adjustment)) + "%", -batteryWidth*0.75, content_height*0.65);
 
     popMatrix(); // <-- right panel content
   }
@@ -398,7 +411,6 @@ class Scene_InGame implements Scene {
         break;
       }
     }
-    println(ship.fuel, adjustment_count);
   }
 
   void keyReleased() {

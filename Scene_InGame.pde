@@ -495,7 +495,7 @@ class Scene_InGame implements Scene {
   void mouseWheel(MouseEvent event) {
     if (moveType == MoveType.LOCK_IN) {
       float e = event.getCount();
-      lock_in_amount = constrain(lock_in_amount - round(e), 1, 20);
+      lock_in_amount = constrain(lock_in_amount - round(e), 0, 10);
     }
   }
 

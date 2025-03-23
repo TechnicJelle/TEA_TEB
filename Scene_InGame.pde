@@ -34,8 +34,8 @@ void recalc_voronoi() {
   }
 }
 
-int adjustment_count = 0;
-float cost_per_adjustment = 2;
+int adjustment_count = 0; //how much steering adjustment has been made for the next move
+float cost_per_adjustment = 2; //how much fuel one adjustment costs
 
 int premove_amount = 0;
 
@@ -164,14 +164,15 @@ class Scene_InGame implements Scene {
     drawScrew(right - screw_offset, top + screw_offset, screwAngleRT);
 
     //content
+    pushMatrix(); // left panel content -->
     float content_x_padding = 48;
     float content_height = bottom - top - y_padding*2;
     translate(left + content_x_padding, top + y_padding);
 
-    //Going To Die -indicator
+    //Indicator: Going To Die?
     drawDeepRect(content_height, content_height);
 
-    pushMatrix();
+    pushMatrix(); // warning icon -->
     translate(content_height*0.50, content_height*0.40);
     scale(0.35);
 
@@ -196,7 +197,7 @@ class Scene_InGame implements Scene {
       text("!", -2, 12);
     }
 
-    popMatrix();
+    popMatrix(); // <-- warning icon
     strokeJoin(MITER);
 
     if (going_to_die) {
@@ -212,6 +213,8 @@ class Scene_InGame implements Scene {
     textSize(16);
     textAlign(CENTER, BOTTOM);
     text("Potential\nCollision\nImminent!", content_height/2, content_height - 3);
+
+    popMatrix(); // <-- left panel content
   }
 
   void drawDeepRect(float rWidth, float rHeight) {
@@ -247,6 +250,9 @@ class Scene_InGame implements Scene {
   }
 
   void mouseReleased() {
+    if (pointOverSelfExplodeButton(mouseX, mouseY)) {
+      gameState.nextScene();
+    }
   }
 
   void keyPressed() {

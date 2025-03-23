@@ -12,30 +12,30 @@ interface Scene {
 }
 
 class GameState {
-  List<Scene> internalScenes;
-  int currentScene;
-  int defaultScene;
-  boolean goToNextScene = false;
+  List<Scene> _internalScenes;
+  int _currentScene;
+  int _defaultScene;
+  boolean _goToNextScene = false;
 
   GameState(int defaultScene, Scene... scenes) {
-    internalScenes = List.of(scenes);
-    this.defaultScene = defaultScene;
-    assert internalScenes.size() > 0;
-    currentScene = 0;
+    _internalScenes = List.of(scenes);
+    this._defaultScene = defaultScene;
+    assert _internalScenes.size() > 0;
+    _currentScene = 0;
   }
 
   Scene getCurrentScene() {
-    return internalScenes.get(currentScene);
+    return _internalScenes.get(_currentScene);
   }
 
   void stepCurrentScene() {
-    if (goToNextScene) {
+    if (_goToNextScene) {
       sfxMenu.play();
-      goToNextScene = false;
+      _goToNextScene = false;
       getCurrentScene().cleanup();
-      currentScene++;
-      if (currentScene > internalScenes.size()-1)
-        currentScene = defaultScene;
+      _currentScene++;
+      if (_currentScene > _internalScenes.size()-1)
+        _currentScene = _defaultScene;
 
       getCurrentScene().init();
       return;
@@ -64,6 +64,6 @@ class GameState {
   }
 
   void nextScene() {
-    goToNextScene = true;
+    _goToNextScene = true;
   }
 }

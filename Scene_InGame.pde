@@ -117,7 +117,7 @@ class Scene_InGame implements Scene {
       image(grBkgrVoronoi, 0, 0);
 
       noStroke();
-      fill(30, 255, 255);
+      fill(200, 30, 190);
       int last_soi = trajectory_sois[0];
       int local_premove_amount = premove_amount;
       for (int i = 0; i < trajectory_lookahead; i++) {
@@ -175,7 +175,6 @@ class Scene_InGame implements Scene {
 
         //popMatrix();
       }
-      randomSeed(millis());
 
       //color the current soi planet, mainly for debug atm
       //  fill(0, 255, 0);

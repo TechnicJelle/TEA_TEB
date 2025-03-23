@@ -9,11 +9,15 @@ class Scene_MainMenu implements Scene {
 
     textFont(fntOrbitronBlack);
     textSize(128);
-    text("TEA_TEB", width/2f, height*0.2);
+    text("Geodesic", width*0.440, height*0.2);
+
+    textFont(fntOrbitronBold);
+    textSize(64);
+    text("By Team Geodesic", width*0.556, height*0.3);
 
     textFont(fntOrbitronRegular);
     textSize(32);
-    text("Press space or click to start...", width/2f, height*0.7);
+    text("Press space or click to start...", width/2f, height*0.9);
   }
 
   void mousePressed() {

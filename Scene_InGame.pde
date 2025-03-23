@@ -423,9 +423,9 @@ class Scene_InGame implements Scene {
 
       textSize(15);
       fill(50);
+      textAlign(CENTER, CENTER);
       text("Only use in case\nof optionlessness", -content_height*1.0, content_height*0.33, content_height * 0.5f);
-
-     }
+    }
     if (!buttonHovered) {
       stroke(150);
       strokeWeight(4);

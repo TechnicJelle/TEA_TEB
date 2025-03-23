@@ -22,7 +22,7 @@ boolean going_to_die;
 
 float ship_exclusion_radius = 100;
 
-boolean flying_paused = false;
+boolean flying_paused;
 VoronoiCalculationStage _voronoiCalculationStage;
 enum VoronoiCalculationStage {
   FIRST_BACKGROUND, CALCULATING, IN_GAME, RE_BACKGROUND, RE_CALCULATING
@@ -53,6 +53,7 @@ class Scene_InGame implements Scene {
     ship = new Ship(new PVector(19 * width / 20, height / 2), new PVector(-5, 0), 15, color(0, 255, 255));
 
     _voronoiCalculationStage = VoronoiCalculationStage.FIRST_BACKGROUND;
+    flying_paused = false;
 
     screwAngleLB = random(0, TWO_PI);
     screwAngleLT = random(0, TWO_PI);
@@ -76,7 +77,6 @@ class Scene_InGame implements Scene {
       //no need for any drawing; the stuff from last frame is still on screen
       generate_all_planets_with_constraints();
       draw_voronoi_to_background();
-      actual_trajectory_calculation();
       _voronoiCalculationStage = VoronoiCalculationStage.IN_GAME;
       break;
     case IN_GAME:

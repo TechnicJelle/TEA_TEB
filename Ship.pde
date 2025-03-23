@@ -19,22 +19,8 @@ class Ship {
 
 int continuation_in_space(PVector pos, PVector vel, PVector acc) {
   acc = new PVector(0, 0);
-  float largest_grav_force = 0;
-  int soi_planet = last_soi_planet;  
 
-  for (int j = 0; j < planets.size(); j++) {
-    Planet p = planets.get(j);
-  
-    PVector difference = PVector.sub(pos, p.pos);
-    float sq_distance = sq(difference.mag());
-    float gravitational_force = G * p.mass / sq_distance;
-  
-    //if bigger, set new soi
-    if (gravitational_force > largest_grav_force) {
-      largest_grav_force = gravitational_force;
-      soi_planet = j;
-    }
-  }
+  int soi_planet = closest_soi(pos);
     
   //apply appropriate forces
   Planet soi = planets.get(soi_planet);
@@ -73,7 +59,7 @@ void actual_trajectory_calculation() {
   PVector trajectory_pos = ship.pos.copy();
   PVector trajectory_vel = ship.vel.copy();
   PVector trajectory_acc = new PVector(0, 0);
-  
+
   for (int i = 0; i < trajectory_lookahead; i++) { /* trajectory for-loop */
     int soi_planet = continuation_in_space(trajectory_pos, trajectory_vel, trajectory_acc);
   

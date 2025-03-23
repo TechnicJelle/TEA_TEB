@@ -42,6 +42,9 @@ int lock_in_amount;
 
 MoveChoiceCard[] moveChoiceCards = new MoveChoiceCard[3];
 
+final int maxPlanetExplosions = 5;
+int amountOfExplodedPlanets;
+
 class Scene_InGame implements Scene {
   float screwAngleLB;
   float screwAngleLT;
@@ -73,6 +76,8 @@ class Scene_InGame implements Scene {
 
     adjustment_count = 0;
     lock_in_amount = 0;
+
+    amountOfExplodedPlanets= 0;
 
     moveChoiceCards[0] = new SteerChoiceCard(visualCenter-cardWidth*2, top + y_padding, cardWidth, content_height);
     moveChoiceCards[1] = new ExplodePlanetChoiceCard(visualCenter-cardWidth/2, top + y_padding, cardWidth, content_height);
@@ -134,7 +139,11 @@ class Scene_InGame implements Scene {
       //draw all planets
       for (Planet p : planets) {
         //noStroke();
-        stroke(p.col);
+        if (flying_paused && moveType == MoveType.EXPLODE_PLANET && new PVector(mouseX, mouseY).dist(p.pos) < p.radius) {
+          stroke(255, 0, 0);
+        } else {
+          stroke(p.col);
+        }
         strokeWeight(p.radius);
         point(p.pos.x, p.pos.y);
         //pushMatrix();
@@ -267,7 +276,10 @@ class Scene_InGame implements Scene {
     text("Potential\nCollision\nImminent!", content_height/2, content_height - 3);
 
     translate(content_height + content_x_padding, 0);
-    if (moveType == MoveType.STEER) {
+    switch(moveType) {
+    case FLYING:
+      break;
+    case STEER:
       pushMatrix(); //steering indicator -->
       translate(content_height, content_height);
       fill(180);
@@ -297,7 +309,21 @@ class Scene_InGame implements Scene {
       textSize(24);
       fill(50);
       text("Arrow Keys to adjust course.\nPress SPACE to continue the flight!", content_x_padding + content_height*2, content_height*0.5);
-    } else if (moveType == MoveType.LOCK_IN) {
+      break;
+    case EXPLODE_PLANET:
+      textAlign(CENTER, CENTER);
+      textFont(fntOrbitronBold);
+      textSize(32);
+      fill(50);
+      text("Exploded planets:\n" + amountOfExplodedPlanets + "/" + maxPlanetExplosions, content_height, content_height*0.5);
+
+      textAlign(LEFT, CENTER);
+      textFont(fntOrbitronBold);
+      textSize(32);
+      fill(50);
+      text("Click on a planet to explode it.\nPress SPACE to continue the flight!", content_x_padding + content_height*2, content_height*0.5);
+      break;
+    case LOCK_IN:
       float lockinWidth = content_height/3*2;
       pushMatrix(); //lock-in steps amount -->
       stroke(120);
@@ -327,6 +353,7 @@ class Scene_InGame implements Scene {
       text("Scroll to increase the Lock-In Steps.\nPress SPACE to continue the flight!", lockinWidth + content_x_padding, content_height * 0.5);
 
       popMatrix(); // <-- lock-in steps amount
+      break;
     }
 
     popMatrix(); // <-- left panel content
@@ -485,9 +512,24 @@ class Scene_InGame implements Scene {
       gameState.nextScene();
     }
 
-    if (flying_paused && moveType == MoveType.FLYING) {
-      for (MoveChoiceCard card : moveChoiceCards) {
-        card.checkClick();
+    if (flying_paused) {
+      if (moveType == MoveType.FLYING) {
+        for (MoveChoiceCard card : moveChoiceCards) {
+          card.checkClick();
+        }
+      }
+      if (moveType == MoveType.EXPLODE_PLANET) {
+        for (int i = planets.size() - 1; i >= 0; i--) {
+          Planet p = planets.get(i);
+          if (new PVector(mouseX, mouseY).dist(p.pos) < p.radius) {
+            println("TODO: actually delete this clicked planet");
+            amountOfExplodedPlanets++;
+            if (amountOfExplodedPlanets >= maxPlanetExplosions) {
+              continueFlying();
+              break;
+            }
+          }
+        }
       }
     }
   }
@@ -529,17 +571,22 @@ class Scene_InGame implements Scene {
     }
   }
 
+  void continueFlying() {
+    if (moveType != MoveType.FLYING) {
+      amountOfExplodedPlanets = 0;
+      moveType = MoveType.FLYING;
+      flying_paused = false;
+      ship.fuel -= abs(adjustment_count)*cost_per_adjustment;
+      ship.fuel = max(ship.fuel, 0.0);
+      ship.fuel = min(ship.fuel, 100.0);
+      adjustment_count = 0;
+    }
+  }
+
   void keyReleased() {
     switch(key) {
     case ' ':
-      if (moveType != MoveType.FLYING) {
-        moveType = MoveType.FLYING;
-        flying_paused = false;
-        ship.fuel -= abs(adjustment_count)*cost_per_adjustment;
-        ship.fuel = max(ship.fuel, 0.0);
-        ship.fuel = min(ship.fuel, 100.0);
-        adjustment_count = 0;
-      }
+      continueFlying();
       break;
     case 'v':
       for (int removal = 0; removal < 25; removal += 1) {

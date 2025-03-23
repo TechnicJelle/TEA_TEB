@@ -143,7 +143,7 @@ class Scene_InGame implements Scene {
       int local_lock_in_amount = lock_in_amount;
       for (int i = 0; i < trajectory_lookahead; i++) {
         if (local_lock_in_amount < 0) {
-          fill(0, 255, 0);
+          fill(0, 255, 255);
         } else if (trajectory_sois[i] != last_soi) local_lock_in_amount -= 1;
         circle(trajectory[i].x, trajectory[i].y, 2);
         last_soi = trajectory_sois[i];

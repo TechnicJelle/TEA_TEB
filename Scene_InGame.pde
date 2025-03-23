@@ -128,21 +128,51 @@ class Scene_InGame implements Scene {
         last_soi = trajectory_sois[i];
       }
 
-      //draw ship
-      if (going_to_die) {
-        fill(color(255, 100, 100));
-      } else {
-        fill(ship.col);
-      }
       ship.draw();
-      //circle(ship.pos.x, ship.pos.y, ship.radius);
 
       //draw all planets
       for (Planet p : planets) {
-        noStroke();
-        fill(p.col);
-        circle(p.pos.x, p.pos.y, p.radius);
+        //noStroke();
+        pushMatrix();
+        translate(p.pos.x, p.pos.y);
+        randomSeed(p.seed);
+        rotate(random(0, 100));
+        scale(p.radius);
+
+        stroke(p.col);
+        strokeWeight(1/p.radius);
+        //circle(0, 0, 1);
+        beginShape(LINES);
+          vertex(0, -1);
+          vertex(0, 1);
+
+          vertex(-0.8, -0.25);
+          vertex(0.8, 0.25);
+          
+          vertex(-0.8, 0.25);
+          vertex(0.8, -0.25);
+          
+          vertex(-0.2, -0.2);
+          vertex(0.2, 0.2);
+          vertex(-0.2, 0.2);
+          vertex(0.2, -0.2);
+        endShape();
+
+        strokeWeight(2/p.radius);
+        beginShape(LINES);
+          vertex(0, -0.9);
+          vertex(0, 0.9);
+
+          vertex(-0.7, -0.15);
+          vertex(0.7, 0.15);
+          
+          vertex(-0.7, 0.15);
+          vertex(0.7, -0.15);
+        endShape();
+
+        popMatrix();
       }
+      randomSeed(millis());
 
       //color the current soi planet, mainly for debug atm
       //  fill(0, 255, 0);

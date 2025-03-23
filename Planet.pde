@@ -4,12 +4,14 @@ class Planet {
   float mass;
   float radius;
   color col;
+  int seed;
 
-  Planet(PVector p, float m, float r, color c) {
+  Planet(PVector p, float m, float r, color c, int s) {
     pos = p;
     mass = m;
     radius = r;
     col = c;
+    seed = s;
   }
 }
 
@@ -18,7 +20,7 @@ void generate_all_planets_with_constraints() {
   planets = new ArrayList<Planet>();
 
   for (int i = 0; i < 250; i++) {
-    Planet plant = new Planet(new PVector(random(width), random(height)), random(1, 200), random(2, 20), color(255));
+    Planet plant = new Planet(new PVector(random(width), random(height)), random(1, 200), random(2, 20), color(255), i);
     plant.radius = 2;
     plant.radius += 20*(plant.mass-1)/200;
     initial_planets.add(plant);

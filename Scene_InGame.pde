@@ -419,52 +419,24 @@ class Scene_InGame implements Scene {
   }
 
   void keyReleased() {
-    if (key == CODED) {
-      //switch(keyCode) {
-      //case LEFT:
-      //  if (flying_paused == true) {
-      //    if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
-      //      if (adjustment_count < 0) adjustment_count += 1;
-      //      break;
-      //    }
-      //    adjustment_count += 1;
-      //    ship.vel.add(velocity_increment);
-      //    actual_trajectory_calculation();
-      //  }
-      //  break;
-
-      //case RIGHT:
-      //  if (flying_paused == true) {
-      //    if (ship.fuel <= 0 || (abs(adjustment_count)+1)*cost_per_adjustment > ship.fuel) {
-      //      if (adjustment_count > 0) adjustment_count -= 1;
-      //      break;
-      //    }
-      //    adjustment_count -= 1;
-      //    ship.vel.sub(velocity_increment);
-      //    actual_trajectory_calculation();
-      //  }
-      //  break;
-      //}
-    } else {
-      switch(key) {
-      case ' ':
-        flying_paused = false;
-        ship.fuel -= abs(adjustment_count)*cost_per_adjustment;
-        ship.fuel = max(ship.fuel, 0.0);
-        ship.fuel = min(ship.fuel, 100.0);
-        adjustment_count = 0;
-        break;
-      case 'v':
-        for (int removal = 0; removal < 25; removal += 1) {
-          if (planets.size() > 5) planets.remove(0);
-        }
-        recalc_voronoi();
-        actual_trajectory_calculation();
-        break;
-      case 'p':
-        premove_amount = 10;
-        break;
+    switch(key) {
+    case ' ':
+      flying_paused = false;
+      ship.fuel -= abs(adjustment_count)*cost_per_adjustment;
+      ship.fuel = max(ship.fuel, 0.0);
+      ship.fuel = min(ship.fuel, 100.0);
+      adjustment_count = 0;
+      break;
+    case 'v':
+      for (int removal = 0; removal < 25; removal += 1) {
+        if (planets.size() > 5) planets.remove(0);
       }
+      recalc_voronoi();
+      actual_trajectory_calculation();
+      break;
+    case 'p':
+      premove_amount = 10;
+      break;
     }
   }
 

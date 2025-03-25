@@ -8,6 +8,7 @@ on:
 env:
   PROCESSING_TAG: processing-1293-4.3
   LIB_SOUND_TAG: v2.4.0
+  ARTIFACT_NAME: ${{ github.event.repository.name }}_${{ github.sha }}_(${{ runner.os }})
   GH_TOKEN: ${{ github.token }}
 
 jobs:
@@ -39,13 +40,15 @@ jobs:
         # Zipping up the project clears the executable bit on the java binary, so make the startup script enable it again.
         #  https://github.com/actions/upload-artifact?tab=readme-ov-file#permission-loss
         run: sed -i '5i chmod +x $APPDIR/java/bin/java' out/${{ github.event.repository.name }}
+      - name: Prep for upload
+        run: |
+          rm -rf ./out/source/
+          mv ./out/ ./out/${{ env.ARTIFACT_NAME }}/
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ github.event.repository.name }}(${{ runner.os }})"
-          path: |
-            ./out/
-            !./out/source/
+          name: "${{ env.ARTIFACT_NAME }}"
+          path: "./out/"
   build-windows:
     runs-on: windows-2022
     steps:
@@ -69,10 +72,12 @@ jobs:
       - name: Export
         # The processing-java prefers absolute paths on Windows.
         run: processing-java --sketch="${{ github.workspace }}" --output="${{ github.workspace }}/out" --force --export
+      - name: Prep for upload
+        run: |
+          rm -rf ./out/source/
+          mv ./out/ ./out/${{ env.ARTIFACT_NAME }}/
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ github.event.repository.name }}(${{ runner.os }})"
-          path: |
-            ./out/
-            !./out/source/
+          name: "${{ env.ARTIFACT_NAME }}"
+          path: "./out/"

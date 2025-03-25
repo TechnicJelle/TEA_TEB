@@ -46,11 +46,11 @@ jobs:
         run: |
           rm -rf ./out/source/
           mkdir ./upload/
-          mv ./out/ "./upload/${{ github.event.repository.name }}_${{ env.GITHUB_SHA_SHORT }}_(${{ runner.os }})/"
+          mv ./out/ "./upload/${{ github.event.repository.name }}_${{ runner.os }}_(${{ env.GITHUB_SHA_SHORT }})/"
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ github.event.repository.name }}_${{ env.GITHUB_SHA_SHORT }}_(${{ runner.os }})"
+          name: "${{ github.event.repository.name }}_${{ runner.os }}_(${{ env.GITHUB_SHA_SHORT }})"
           path: "./upload/"
   build-windows:
     runs-on: windows-2022
@@ -85,9 +85,9 @@ jobs:
         run: |
           Remove-Item -Recurse -Force ./out/source/
           New-Item -Path . -Name "upload" -ItemType "directory"
-          Move-Item -Path "./out/" -Destination "./upload/${{ github.event.repository.name }}_${{ env.GITHUB_SHA_SHORT }}_(${{ runner.os }})/"
+          Move-Item -Path "./out/" -Destination "./upload/${{ github.event.repository.name }}_${{ runner.os }}_(${{ env.GITHUB_SHA_SHORT }})/"
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ github.event.repository.name }}_${{ env.GITHUB_SHA_SHORT }}_(${{ runner.os }})"
+          name: "${{ github.event.repository.name }}_${{ runner.os }}_(${{ env.GITHUB_SHA_SHORT }})"
           path: "./upload/"

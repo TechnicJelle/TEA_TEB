@@ -5,7 +5,7 @@ _Codename: [TEA-TEB](https://en.wiktionary.org/wiki/TEA-TEB)_
 <i>Main Menu</i></p>
 
 **A rogue-like survival game where you control a spacecraft
-that needs to navigate through many obstacles.**
+that needs to navigate through the stars.**
 
 <p align="center"><img src=".github/readme_assets/in_game.png" alt="screenshot of the game">
 <i>In-Game</i></p>

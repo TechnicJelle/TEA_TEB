@@ -201,9 +201,24 @@ class Scene_InGame implements Scene {
       }
       if (flying_paused && moveType == MoveType.EXPLODE_PLANET && canExplodePlanet()) {
         Planet p = planets.get(closest_soi(new PVector(mouseX, mouseY)));
+        pushMatrix();
+        translate(p.pos.x, p.pos.y);
+
         stroke(255, 0, 0);
         strokeWeight(p.radius);
-        point(p.pos.x, p.pos.y);
+        point(0, 0);
+        
+        //Reticle
+        rotate(millis()/-1000f);
+        float offset = p.radius/2+10;
+        stroke(255, 255, 0);
+        strokeWeight(5);
+        arrow(-offset-40, 0, -offset, 0, 10); // →
+        arrow(0, -offset-40, 0, -offset, 10); // ↓
+        arrow( offset+40, 0, offset, 0, 10); // ←
+        arrow(0, offset+40, 0, offset, 10); // ↑
+
+        popMatrix();
       }
 
       //println(score/width);

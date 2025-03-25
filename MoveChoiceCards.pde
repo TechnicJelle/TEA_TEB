@@ -24,7 +24,7 @@ abstract class MoveChoiceCard {
         fill(200, 140);
       }
       rect(x, y, w, h, 5);
-      
+
       fill(100);
       textFont(fntOrbitronRegular);
       textSize(32);
@@ -40,7 +40,7 @@ abstract class MoveChoiceCard {
 
 MoveType moveType = MoveType.FLYING;
 enum MoveType {
-  FLYING, STEER, EXPLODE_PLANET, LOCK_IN
+  FLYING, STEER, EXPLODE_PLANET, COAST
 }
 
 class SteerChoiceCard extends MoveChoiceCard {
@@ -95,11 +95,11 @@ class ExplodePlanetChoiceCard extends MoveChoiceCard {
   }
 }
 
-class LockInChoiceCard extends MoveChoiceCard {
+class CoastChoiceCard extends MoveChoiceCard {
   PImage tex;
 
-  LockInChoiceCard(float x, float y, float w, float h) {
-    super(x, y, w, h, "Lock In (3): Move a set amount of cells, and regain some fuel");
+  CoastChoiceCard(float x, float y, float w, float h) {
+    super(x, y, w, h, "Coast (3): Move a pre-set amount of cells, and regain some fuel");
     tex = loadImage("data/tex/nyoom.png");
   }
 
@@ -113,6 +113,6 @@ class LockInChoiceCard extends MoveChoiceCard {
 
   void checkClick() {
     if (!hovering) return;
-    moveType = MoveType.LOCK_IN;
+    moveType = MoveType.COAST;
   }
 }

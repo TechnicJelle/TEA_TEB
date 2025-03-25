@@ -40,9 +40,9 @@ boolean pointOverSelfExplodeButton(float x, float y) {
 
 int adjustment_count; //how much steering adjustment has been made for the next move
 final float cost_per_adjustment = 2.8; //how much fuel one adjustment costs
-final float reward_per_lock_in = 0.4;
+final float reward_per_coast = 0.4;
 
-int lock_in_amount;
+int coast_amount;
 
 MoveChoiceCard[] moveChoiceCards = new MoveChoiceCard[3];
 
@@ -84,13 +84,13 @@ class Scene_InGame implements Scene {
     screwAngleRT = random(0, TWO_PI);
 
     adjustment_count = 0;
-    lock_in_amount = 0;
+    coast_amount = 0;
 
     currentlyAwaitedTurnsToWaitForNewPlanetExplosion = turnsToWaitForNewPlanetExplosion;
 
     moveChoiceCards[0] = new SteerChoiceCard(visualCenter-cardWidth*2, top + y_padding, cardWidth, content_height);
     moveChoiceCards[1] = new ExplodePlanetChoiceCard(visualCenter-cardWidth/2, top + y_padding, cardWidth, content_height);
-    moveChoiceCards[2] = new LockInChoiceCard(visualCenter+cardWidth, top + y_padding, cardWidth, content_height);
+    moveChoiceCards[2] = new CoastChoiceCard(visualCenter+cardWidth, top + y_padding, cardWidth, content_height);
 
     score = 0;
   }
@@ -121,10 +121,10 @@ class Scene_InGame implements Scene {
         for (int i = 0; i < 10; i++) {/* ship simulation step for-loop */
           int soi_planet = continuation_in_space(ship.pos, ship.vel, ship.acc);
           if (soi_planet != last_soi_planet) {
-            if (lock_in_amount <= 0) flying_paused = true;
+            if (coast_amount <= 0) flying_paused = true;
             else {
-              lock_in_amount -= 1;
-              ship.fuel += reward_per_lock_in;
+              coast_amount -= 1;
+              ship.fuel += reward_per_coast;
               ship.fuel = max(ship.fuel, 0.0);
               ship.fuel = min(ship.fuel, 100.0);
             }
@@ -143,11 +143,11 @@ class Scene_InGame implements Scene {
       noStroke();
       fill(200, 30, 190);
       int last_soi = trajectory_sois[0];
-      int local_lock_in_amount = lock_in_amount;
+      int local_coast_amount = coast_amount;
       for (int i = 0; i < trajectory_lookahead; i++) {
-        if (local_lock_in_amount < 0) {
+        if (local_coast_amount < 0) {
           fill(0, 255, 255);
-        } else if (trajectory_sois[i] != last_soi) local_lock_in_amount -= 1;
+        } else if (trajectory_sois[i] != last_soi) local_coast_amount -= 1;
         circle(trajectory[i].x, trajectory[i].y, 2);
         last_soi = trajectory_sois[i];
       }
@@ -346,36 +346,36 @@ class Scene_InGame implements Scene {
       if (canExplodePlanet()) text("Click on a planet to explode it.\nPress SPACE to continue the flight!", content_height, content_height*0.5);
       else text("Press SPACE to continue the flight!", content_height, content_height*0.5);
       break;
-    case LOCK_IN:
-      float lockinWidth = content_height/3*2;
-      pushMatrix(); //lock-in steps amount -->
+    case COAST:
+      float coastWidth = content_height/3*2;
+      pushMatrix(); //coast steps amount -->
       stroke(120);
       strokeWeight(5);
       fill(180);
-      rect(0, 0, lockinWidth, content_height);
+      rect(0, 0, coastWidth, content_height);
 
       textAlign(CENTER, CENTER);
       textFont(fntOrbitronBold);
       textSize(64);
       fill(50);
-      text(lock_in_amount, lockinWidth/2, content_height * 0.5);
+      text(coast_amount, coastWidth/2, content_height * 0.5);
 
       stroke(50);
       strokeWeight(10);
       //top
-      line(lockinWidth/2-35, 40, lockinWidth/2, 10);
-      line(lockinWidth/2+35, 40, lockinWidth/2, 10);
+      line(coastWidth/2-35, 40, coastWidth/2, 10);
+      line(coastWidth/2+35, 40, coastWidth/2, 10);
       //bottom
-      line(lockinWidth/2-35, content_height-40, lockinWidth/2, content_height-10);
-      line(lockinWidth/2+35, content_height-40, lockinWidth/2, content_height-10);
+      line(coastWidth/2-35, content_height-40, coastWidth/2, content_height-10);
+      line(coastWidth/2+35, content_height-40, coastWidth/2, content_height-10);
 
       textAlign(LEFT, CENTER);
       textFont(fntOrbitronBold);
       textSize(32);
       fill(50);
-      text("Scroll to increase the Lock-In Steps.\nPress SPACE to continue the flight!", lockinWidth + content_x_padding, content_height * 0.5);
+      text("Scroll to increase the Coast Steps.\nPress SPACE to continue the flight!", coastWidth + content_x_padding, content_height * 0.5);
 
-      popMatrix(); // <-- lock-in steps amount
+      popMatrix(); // <-- coast steps amount
       break;
     }
 
@@ -481,7 +481,7 @@ class Scene_InGame implements Scene {
       text(round(abs(adjustment_count * cost_per_adjustment)) + "%", -batteryWidth*0.75, content_height*0.65);
     }
 
-    if (moveType == MoveType.LOCK_IN) {
+    if (moveType == MoveType.COAST) {
       pushMatrix();
       translate(-content_height * 0.90 - content_x_padding, 0);
       drawDeepRect(content_height, content_height);
@@ -490,9 +490,9 @@ class Scene_InGame implements Scene {
       textFont(fntOrbitronRegular);
       textAlign(RIGHT, CENTER);
       textSize(24);
-      text("This lock-in\nwill give:", -batteryWidth*0.75, content_height*0.35);
+      text("This coast\nwill give:", -batteryWidth*0.75, content_height*0.35);
       textSize(38);
-      text(round(lock_in_amount * reward_per_lock_in) + "%", -batteryWidth*0.75, content_height*0.65);
+      text(round(coast_amount * reward_per_coast) + "%", -batteryWidth*0.75, content_height*0.65);
     }
 
     popMatrix(); // <-- right panel content
@@ -509,8 +509,8 @@ class Scene_InGame implements Scene {
       textSize(32);
       fill(50);
       text("Ship is in flight...\nPlease hold on...", visualCenter, top + y_padding + content_height*0.5);
-      if (lock_in_amount != 0) {
-        text("Steps left: " + lock_in_amount, visualCenter + content_height*2.2, top + y_padding + content_height*0.5);
+      if (coast_amount != 0) {
+        text("Steps left: " + coast_amount, visualCenter + content_height*2.2, top + y_padding + content_height*0.5);
       }
     }
   }
@@ -571,9 +571,9 @@ class Scene_InGame implements Scene {
   }
 
   void mouseWheel(MouseEvent event) {
-    if (flying_paused && moveType == MoveType.LOCK_IN) {
+    if (flying_paused && moveType == MoveType.COAST) {
       float e = event.getCount();
-      lock_in_amount = constrain(lock_in_amount - round(e), 0, 10);
+      coast_amount = constrain(coast_amount - round(e), 0, 10);
     }
   }
 
@@ -613,10 +613,10 @@ class Scene_InGame implements Scene {
       if (flying_paused && moveType == MoveType.FLYING) moveType = MoveType.STEER;
       break;
     case '2':
-      if (flying_paused && moveType == MoveType.FLYING && canExplodePlanet()) moveType = MoveType.LOCK_IN;
+      if (flying_paused && moveType == MoveType.FLYING && canExplodePlanet()) moveType = MoveType.COAST;
       break;
     case '3':
-      if (flying_paused && moveType == MoveType.FLYING) moveType = MoveType.LOCK_IN;
+      if (flying_paused && moveType == MoveType.FLYING) moveType = MoveType.COAST;
       break;
     case ' ':
     case ENTER:

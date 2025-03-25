@@ -43,13 +43,13 @@ jobs:
       - name: Prepare for upload
         run: |
           rm -rf ./out/source/
-          mkdir upload
+          mkdir ./upload/
           mv ./out/ "./upload/${{ env.ARTIFACT_NAME }}_(${{ runner.os }})/"
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: "${{ env.ARTIFACT_NAME }}_(${{ runner.os }})"
-          path: "./out/"
+          path: "./upload/"
   build-windows:
     runs-on: windows-2022
     steps:
@@ -85,4 +85,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: "${{ env.ARTIFACT_NAME }}_(${{ runner.os }})"
-          path: "./out/"
+          path: "./upload/"

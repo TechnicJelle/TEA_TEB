@@ -78,9 +78,6 @@ jobs:
       - name: Export
         # The processing-java prefers absolute paths on Windows.
         run: processing-java --sketch="${{ github.workspace }}" --output="${{ github.workspace }}/out" --force --export
-      - name: Prep for upload
-        run: |
-          Move-Item -Path ./out/ -Destination "./out/${{ env.ARTIFACT_NAME }}_(${{ runner.os }})/"
       - name: Prepare for upload
         run: |
           Remove-Item -Recurse -Force ./out/source/

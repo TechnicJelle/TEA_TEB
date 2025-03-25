@@ -80,3 +80,19 @@ void keyReleased() {
   }
   gameState.keyReleasedCurrentScene();
 }
+
+void arrow(PVector a, PVector b, float s) {
+  arrow(a.x, a.y, b.x, b.y, s);
+}
+
+void arrow(float x1, float y1, float x2, float y2, float s) {
+  //From: https://processing.org/discourse/beta/num_1219607845.html
+  line(x1, y1, x2, y2);
+  pushMatrix();
+  translate(x2, y2);
+  float a = atan2(x1-x2, y2-y1);
+  rotate(a);
+  line(0, 0, -s, -s);
+  line(0, 0, s, -s);
+  popMatrix();
+}

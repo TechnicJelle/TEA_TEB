@@ -9,12 +9,11 @@ env:
   PROCESSING_TAG: processing-1293-4.3
   LIB_SOUND_TAG: v2.4.0
   GH_TOKEN: ${{ github.token }}
+  ARTIFACT_NAME: ${{ github.event.repository.name }}_${{ github.sha }}
 
 jobs:
   build-linux:
     runs-on: ubuntu-24.04
-    env:
-      ARTIFACT_NAME: ${{ github.event.repository.name }}_${{ github.sha }}_(${{ runner.os }})
     steps:
       - uses: actions/checkout@v4
       - name: Setup Processing
@@ -44,16 +43,14 @@ jobs:
       - name: Prep for upload
         run: |
           rm -rf ./out/source/
-          mv ./out/ ./out/${{ env.ARTIFACT_NAME }}/
+          mv ./out/ ./out/${{ env.ARTIFACT_NAME }}_(${{ runner.os }})/
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ env.ARTIFACT_NAME }}"
+          name: "${{ env.ARTIFACT_NAME }}_(${{ runner.os }})"
           path: "./out/"
   build-windows:
     runs-on: windows-2022
-    env:
-      ARTIFACT_NAME: ${{ github.event.repository.name }}_${{ github.sha }}_(${{ runner.os }})
     steps:
       - uses: actions/checkout@v4
       - name: Setup Processing
@@ -78,9 +75,9 @@ jobs:
       - name: Prep for upload
         run: |
           rm -rf ./out/source/
-          mv ./out/ ./out/${{ env.ARTIFACT_NAME }}/
+          mv ./out/ ./out/${{ env.ARTIFACT_NAME }}_(${{ runner.os }})/
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ env.ARTIFACT_NAME }}"
+          name: "${{ env.ARTIFACT_NAME }}_(${{ runner.os }})"
           path: "./out/"

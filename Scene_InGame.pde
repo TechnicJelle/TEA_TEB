@@ -388,6 +388,7 @@ class Scene_InGame implements Scene {
 
     //Button: Restart
 
+    final String strOptionlessness = "Only use in case\nof optionlessness";
     boolean buttonHovered = pointOverSelfExplodeButton(mouseX, mouseY);
     if (buttonHovered) {
       stroke(150);
@@ -399,6 +400,15 @@ class Scene_InGame implements Scene {
         content_height * 0.05, content_height * -0.30, //top right
         content_height * -0.10, content_height * 0.60, //bottom right
         -content_height * 1.90, content_height * 0.60); //bottom left
+
+      //shop upside-down "optionlessness" behind the button
+      pushMatrix();
+      scale(1, -1);
+      textSize(17);
+      fill(50);
+      textAlign(CENTER, CENTER);
+      text(strOptionlessness, content_height * -1, content_height * 0.034);
+      popMatrix();
     }
 
     //button base
@@ -408,6 +418,7 @@ class Scene_InGame implements Scene {
     //bottom round shade
     fill(200, 0, 0);
     ellipse(-content_height, content_height * 0.67, -content_height * 1.7, content_height * 0.50);
+
     if (mousePressed && buttonHovered) {
       rectMode(CENTER);
       rect(-content_height, content_height * 0.58, -content_height * 1.7, content_height * 0.20);
@@ -420,11 +431,6 @@ class Scene_InGame implements Scene {
       rectMode(CORNER);
       fill(255, 0, 0);
       ellipse(-content_height, content_height * 0.25, -content_height * 1.7, content_height * 0.50);
-
-      textSize(15);
-      fill(50);
-      textAlign(CENTER, CENTER);
-      text("Only use in case\nof optionlessness", -content_height*1.0, content_height*0.33, content_height * 0.5f);
     }
     if (!buttonHovered) {
       stroke(150);
@@ -439,6 +445,11 @@ class Scene_InGame implements Scene {
       strokeWeight(4);
       line(-content_height * 1.950, -content_height * -0.60, -content_height * 1.95, -content_height * -0.87); //left
       line(content_height * -0.05, -content_height * -0.60, content_height * -0.05, -content_height * -0.87); //right
+
+      textSize(15);
+      fill(50);
+      textAlign(CENTER, CENTER);
+      text(strOptionlessness, -content_height, content_height * 0.25);
     }
 
     //Indicator: Fuel

@@ -20,6 +20,7 @@ Table highscores;
 void setup() {
   fullScreen();
   //size(1800, 900);
+  //size(1920, 1080); //use this for Official Screenshots and Video Content
 
   fntOrbitronRegular = createFont("fonts/Orbitron/Orbitron-Regular.ttf", 128);
   fntOrbitronBold = createFont("fonts/Orbitron/Orbitron-Bold.ttf", 128);
@@ -74,6 +75,7 @@ void keyPressed() {
 void keyReleased() {
   if (key == ESC) {
     key = 0;
+    saveFrame("screenshots/######.png");
     return;
   }
   gameState.keyReleasedCurrentScene();

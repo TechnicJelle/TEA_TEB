@@ -38,10 +38,9 @@ class Scene_MainMenu implements Scene {
 
     text("Traverse large stretches of space.\nThe bigger the passage, the better.", width*2/3f, height*1/2f);
 
-
     textAlign(RIGHT, BOTTOM);
     textSize(20);
-    text("Made with Processing", width-10, height-20);
+    text("Made with Processing\nPress q to quit", width-10, height-20);
   }
 
   void mousePressed() {
@@ -61,6 +60,9 @@ class Scene_MainMenu implements Scene {
   }
 
   void keyReleased() {
+    if (key == 'q') {
+      exit();
+    }
     gameState.nextScene();
   }
 

@@ -64,9 +64,17 @@ void mouseWheel(MouseEvent event) {
 }
 
 void keyPressed() {
+  if (key == ESC) {
+    key = 0;
+    return;
+  }
   gameState.keyPressedCurrentScene();
 }
 
 void keyReleased() {
+  if (key == ESC) {
+    key = 0;
+    return;
+  }
   gameState.keyReleasedCurrentScene();
 }

@@ -624,7 +624,7 @@ class Scene_InGame implements Scene {
       if (flying_paused && moveType == MoveType.FLYING) moveType = MoveType.STEER;
       break;
     case '2':
-      if (flying_paused && moveType == MoveType.FLYING && canExplodePlanet()) moveType = MoveType.COAST;
+      if (flying_paused && moveType == MoveType.FLYING && canExplodePlanet()) moveType = MoveType.EXPLODE_PLANET;
       break;
     case '3':
       if (flying_paused && moveType == MoveType.FLYING) moveType = MoveType.COAST;

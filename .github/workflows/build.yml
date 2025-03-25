@@ -9,13 +9,15 @@ env:
   PROCESSING_TAG: processing-1293-4.3
   LIB_SOUND_TAG: v2.4.0
   GH_TOKEN: ${{ github.token }}
-  ARTIFACT_NAME: ${{ github.event.repository.name }}_${{ github.sha }}
 
 jobs:
   build-linux:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+      - name: Set GitHub Environment Variables
+        run: |
+          echo "GITHUB_SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       - name: Setup Processing
         run: |
           gh release download ${{ env.PROCESSING_TAG }} --repo processing/processing4 --pattern "*linux*x64*"
@@ -44,16 +46,19 @@ jobs:
         run: |
           rm -rf ./out/source/
           mkdir ./upload/
-          mv ./out/ "./upload/${{ env.ARTIFACT_NAME }}_(${{ runner.os }})/"
+          mv ./out/ "./upload/${{ github.event.repository.name }}_${{ env.GITHUB_SHA_SHORT }}_(${{ runner.os }})/"
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ env.ARTIFACT_NAME }}_(${{ runner.os }})"
+          name: "${{ github.event.repository.name }}_${{ env.GITHUB_SHA_SHORT }}_(${{ runner.os }})"
           path: "./upload/"
   build-windows:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
+      - name: Set GitHub Environment Variables
+        run: |
+          Add-Content -Path $env:GITHUB_ENV -Value "GITHUB_SHA_SHORT=$(git rev-parse --short HEAD)"
       - name: Setup Processing
         run: |
           gh release download ${{ env.PROCESSING_TAG }} --repo processing/processing4 --pattern "*windows*x64*"
@@ -80,9 +85,9 @@ jobs:
         run: |
           Remove-Item -Recurse -Force ./out/source/
           New-Item -Path . -Name "upload" -ItemType "directory"
-          Move-Item -Path "./out/" -Destination "./upload/${{ env.ARTIFACT_NAME }}_(${{ runner.os }})/"
+          Move-Item -Path "./out/" -Destination "./upload/${{ github.event.repository.name }}_${{ env.GITHUB_SHA_SHORT }}_(${{ runner.os }})/"
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "${{ env.ARTIFACT_NAME }}_(${{ runner.os }})"
+          name: "${{ github.event.repository.name }}_${{ env.GITHUB_SHA_SHORT }}_(${{ runner.os }})"
           path: "./upload/"

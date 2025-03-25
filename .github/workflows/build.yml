@@ -8,12 +8,13 @@ on:
 env:
   PROCESSING_TAG: processing-1293-4.3
   LIB_SOUND_TAG: v2.4.0
-  ARTIFACT_NAME: ${{ github.event.repository.name }}_${{ github.sha }}_(${{ runner.os }})
   GH_TOKEN: ${{ github.token }}
 
 jobs:
   build-linux:
     runs-on: ubuntu-24.04
+    env:
+      ARTIFACT_NAME: ${{ github.event.repository.name }}_${{ github.sha }}_(${{ runner.os }})
     steps:
       - uses: actions/checkout@v4
       - name: Setup Processing
@@ -51,6 +52,8 @@ jobs:
           path: "./out/"
   build-windows:
     runs-on: windows-2022
+    env:
+      ARTIFACT_NAME: ${{ github.event.repository.name }}_${{ github.sha }}_(${{ runner.os }})
     steps:
       - uses: actions/checkout@v4
       - name: Setup Processing

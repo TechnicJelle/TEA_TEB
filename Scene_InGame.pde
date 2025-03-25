@@ -40,7 +40,7 @@ boolean pointOverSelfExplodeButton(float x, float y) {
 
 int adjustment_count; //how much steering adjustment has been made for the next move
 final float cost_per_adjustment = 2.8; //how much fuel one adjustment costs
-final float reward_per_coast = 0.4;
+final int max_coast = 15;
 
 int coast_amount;
 
@@ -584,7 +584,7 @@ class Scene_InGame implements Scene {
   void mouseWheel(MouseEvent event) {
     if (flying_paused && moveType == MoveType.COAST) {
       float e = event.getCount();
-      coast_amount = constrain(coast_amount - round(e), 0, 10);
+      coast_amount = constrain(coast_amount - round(e), 0, max_coast);
     }
   }
 

@@ -1,9 +1,7 @@
-import processing.sound.*;
-
-SoundFile sfxMenu;
-SoundFile sfxTyped;
-SoundFile sfxHighscores;
-SoundFile sfxHighscoresTop;
+MySound sfxMenu;
+MySound sfxTyped;
+MySound sfxHighscores;
+MySound sfxHighscoresTop;
 
 PFont fntOrbitronRegular;
 PFont fntOrbitronBold;
@@ -27,10 +25,10 @@ void setup() {
   fntOrbitronBlack = createFont("fonts/Orbitron/Orbitron-Black.ttf", 128);
   fntOCR_A = createFont("fonts/OCR_A/OCR_A.ttf", 128);
 
-  sfxMenu = new SoundFile(this, "sfx/menu.wav");
-  sfxTyped = new SoundFile(this, "sfx/typed.wav");
-  sfxHighscores = new SoundFile(this, "sfx/highscores.wav");
-  sfxHighscoresTop = new SoundFile(this, "sfx/highscores_top.wav");
+  sfxMenu = new MySound("sfx/menu.wav");
+  sfxTyped = new MySound("sfx/typed.wav");
+  sfxHighscores = new MySound("sfx/highscores.wav");
+  sfxHighscoresTop = new MySound("sfx/highscores_top.wav");
 
   gameState = new GameState(0,
     new Scene_MainMenu(),

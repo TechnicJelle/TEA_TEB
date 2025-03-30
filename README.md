@@ -18,6 +18,12 @@ Made in **Processing 4.3 (1293)**.
 ## [»Download here«](../../releases/latest)
 Available for _Linux_ and _Windows_.
 
+### System Requirements
+
+| Spec | Minimum | Recommended |
+| ---- | ------- | ------------ |
+| Screen Resolution | 1800×900 | FullHD (1920×1080) or higher |
+
 ## More screenshots
 
 <p align="center"><img src=".github/readme_assets/in_game_tooltips.png" alt="screenshot of the game showing the tooltips of the multiple options">
